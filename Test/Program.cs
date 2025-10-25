@@ -7,12 +7,12 @@ using static GLCS.GL;
 
 namespace Test;
 
-internal readonly struct VertexAttribs(Vector3 position, Color color)
+internal unsafe readonly struct VertexAttribs(Vector3 position, Color color)
 {
-	[GLVertexAttrib(0, GL_FLOAT, false)]
+	[GLVertexAttrib(0, 3, GL_FLOAT, false)]
 	public readonly Vector3 Position = position;
 
-	[GLVertexAttrib(1, GL_FLOAT, false)]
+	[GLVertexAttrib(1, 4, GL_FLOAT, false)]
 	public readonly Vector4 Color = new(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);
 }
 

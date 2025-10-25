@@ -1,4 +1,5 @@
-﻿using static GLCS.GL;
+﻿using System.Diagnostics.CodeAnalysis;
+using static GLCS.GL;
 
 namespace GLCS.Abstractions;
 
@@ -17,7 +18,7 @@ public sealed class GLVertexArray(GL gl) : IDisposable
 		
 	}
 
-	public void VertexAttribPointers<T>(GLBuffer vertexBuffer) where T : struct
+	public void VertexAttribPointers<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T>(GLBuffer vertexBuffer) where T : struct
 	{
 		gl.BindVertexArray(Handle);
 		gl.BindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

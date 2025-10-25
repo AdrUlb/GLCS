@@ -8,6 +8,11 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<PublishAot>true</PublishAot>
+		<OptimizationPreference>Speed</OptimizationPreference>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="ppy.SDL3-CS" Version="2025.920.0" />
 	</ItemGroup>
