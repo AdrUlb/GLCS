@@ -10,25 +10,25 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 	public void GenBuffers(ReadOnlySpan<uint> buffers)
 	{
 		fixed (uint* buffersPtr = buffers)
-			_glGenBuffers(buffers.Length, buffersPtr);
+			GenBuffers(buffers.Length, buffersPtr);
 	}
 
 	public uint GenBuffer()
 	{
 		var buffer = 0u;
-		_glGenBuffers(1, &buffer);
+		GenBuffers(1, &buffer);
 		return buffer;
 	}
 
 	public void DeleteBuffer(uint buffer)
 	{
-		_glDeleteBuffers(1, &buffer);
+		DeleteBuffers(1, &buffer);
 	}
 
 	public void BufferData<T>(uint target, ReadOnlySpan<T> data, uint usage) where T : unmanaged
 	{
 		fixed (T* dataPtr = data)
-			_glBufferData(target, data.Length * sizeof(T), dataPtr, usage);
+			BufferData(target, data.Length * sizeof(T), dataPtr, usage);
 	}
 
 	public void GenVertexArrays(ReadOnlySpan<uint> arrays)
@@ -40,25 +40,25 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 	public uint GenVertexArray()
 	{
 		var vao = 0u;
-		_glGenVertexArrays(1, &vao);
+		GenVertexArrays(1, &vao);
 		return vao;
 	}
 
 	public void DeleteVertexArray(uint vao)
 	{
-		_glDeleteVertexArrays(1, &vao);
+		DeleteVertexArrays(1, &vao);
 	}
 
 	public void GetShaderiv(uint shader, uint pname, Span<int> @params)
 	{
 		fixed (int* paramsPtr = @params)
-			_glGetShaderiv(shader, pname, paramsPtr);
+			GetShaderiv(shader, pname, paramsPtr);
 	}
 
 	public int GetShader(uint shader, uint pname)
 	{
 		var ret = 0;
-		_glGetShaderiv(shader, pname, &ret);
+		GetShaderiv(shader, pname, &ret);
 		return ret;
 	}
 
@@ -66,7 +66,7 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 	{
 		var length = source.Length;
 		var nativeSource = (byte*)Marshal.StringToCoTaskMemUTF8(source);
-		_glShaderSource(shader, 1, &nativeSource, &length);
+		ShaderSource(shader, 1, &nativeSource, &length);
 		Marshal.FreeCoTaskMem((nint)nativeSource);
 	}
 
@@ -75,7 +75,7 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 		var infoLogLength = GetShader(shader, GL_INFO_LOG_LENGTH);
 
 		var infoLog = stackalloc byte[infoLogLength];
-		_glGetShaderInfoLog(shader, infoLogLength, null, infoLog);
+		GetShaderInfoLog(shader, infoLogLength, null, infoLog);
 
 		return Encoding.UTF8.GetString(infoLog, infoLogLength);
 	}
@@ -83,28 +83,29 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 	public void GetProgramiv(uint program, uint pname, Span<int> @params)
 	{
 		fixed (int* paramsPtr = @params)
-			_glGetProgramiv(program, pname, paramsPtr);
+			GetProgramiv(program, pname, paramsPtr);
 	}
 
 	public int GetProgram(uint program, uint pname)
 	{
 		var ret = 0;
-		_glGetProgramiv(program, pname, &ret);
+		GetProgramiv(program, pname, &ret);
 		return ret;
 	}
 
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 	public string GetProgramInfoLog(uint program)
 	{
 		var infoLogLength = GetProgram(program, GL_INFO_LOG_LENGTH);
 
 		var infoLog = stackalloc byte[infoLogLength];
-		_glGetProgramInfoLog(program, infoLogLength, null, infoLog);
+		GetProgramInfoLog(program, infoLogLength, null, infoLog);
 
 		return Encoding.UTF8.GetString(infoLog, infoLogLength);
 	}
 
 	public void VertexAttribPointer(uint @index, int @size, uint @type, bool @normalized, int @stride, nint offset)
 	{
-		_glVertexAttribPointer(index, size, type, normalized, stride, (void*)offset);
+		VertexAttribPointer(index, size, type, normalized, stride, (void*)offset);
 	}
 }

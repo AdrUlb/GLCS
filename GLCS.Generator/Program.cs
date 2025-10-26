@@ -18,7 +18,13 @@ internal class Program
 		constantsBuilder
 			.AppendLine("public unsafe partial class GL")
 			.AppendLine("{");
-		
+
+		var procsBuilder = new StringBuilder();
+		GenerateUsingsAndNamespace(procsBuilder);
+		procsBuilder
+			.AppendLine("public unsafe partial class GL")
+			.AppendLine("{");
+
 		var functionsBuilder = new StringBuilder();
 		GenerateUsingsAndNamespace(functionsBuilder);
 		functionsBuilder
@@ -40,12 +46,14 @@ internal class Program
 			GenerateEnums(enumsElement, constantsBuilder);
 
 		foreach (XmlNode commandsElement in commandsElements)
-			GenerateCommands(commandsElement, functionsBuilder);
+			GenerateCommands(commandsElement, procsBuilder, functionsBuilder);
 
 		constantsBuilder.AppendLine("}");
+		procsBuilder.AppendLine("}");
 		functionsBuilder.AppendLine("}");
 
 		File.WriteAllText("GL.Constants.cs", constantsBuilder.ToString());
+		File.WriteAllText("GL.Procs.cs", procsBuilder.ToString());
 		File.WriteAllText("GL.Functions.cs", functionsBuilder.ToString());
 	}
 
@@ -154,7 +162,7 @@ internal class Program
 		public readonly List<GlParam> Params = param;
 	}
 
-	private static void GenerateCommands(XmlNode commandsElement, StringBuilder builder)
+	private static void GenerateCommands(XmlNode commandsElement, StringBuilder procsBuilder, StringBuilder functionsBuilder)
 	{
 		var funcs = new List<GlFunc>();
 
@@ -246,19 +254,20 @@ internal class Program
 
 		foreach (var func in funcs)
 		{
+			var delegateName = char.ToLower(func.Name[0]) + func.Name[1..] + "_";
 			var type = $"delegate* unmanaged[Stdcall]<{string.Join(", ", [.. func.Params.Select(static o => o.Type), func.ReturnType])}>";
-			builder.Append('\t').Append("private readonly ").Append(type).Append(" _").Append(func.Name).Append(" = (").Append(type).Append(")getProcAddress(\"")
+			procsBuilder.Append('\t').Append("private readonly ").Append(type).Append(' ').Append(delegateName).Append(" = (").Append(type).Append(")getProcAddress(\"")
 				.Append(func.Name).Append("\");").AppendLine();
 		}
 
-		builder.AppendLine();
-
 		foreach (var func in funcs)
 		{
+			var delegateName = char.ToLower(func.Name[0]) + func.Name[1..] + "_";
 			var memberName = func.Name[2..];
-			builder
+			functionsBuilder
+				.Append('\t').AppendLine("[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]")
 				.Append('\t').Append("public ").Append(func.ReturnType).Append(' ').Append(memberName).Append("(").Append(string.Join(", ", func.Params.Select(p => $"{p.Type} {p.Name}")))
-				.Append(") => _").Append(func.Name).Append('(').Append(string.Join(", ", func.Params.Select(p => p.Name))).AppendLine(");");
+				.Append(") => ").Append(delegateName).Append('(').Append(string.Join(", ", func.Params.Select(p => p.Name))).AppendLine(");");
 		}
 	}
 }
