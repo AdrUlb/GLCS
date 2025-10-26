@@ -108,4 +108,6 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 	{
 		VertexAttribPointer(index, size, type, normalized, stride, (void*)offset);
 	}
+
+	public string? GetStringManaged(StringName name) => Marshal.PtrToStringUTF8((nint)GetString(name));
 }

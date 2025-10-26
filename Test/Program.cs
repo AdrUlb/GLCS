@@ -3,11 +3,11 @@ using GLCS.Abstractions;
 using SDL;
 using System.Drawing;
 using System.Numerics;
-using static GLCS.GL;
+using static SDL.SDL3;
 
 namespace Test;
 
-internal unsafe readonly struct VertexAttribs(Vector3 position, Color color)
+internal readonly struct VertexAttribs(Vector3 position, Color color)
 {
 	[GLVertexAttrib(0, 3, VertexAttribPointerType.GL_FLOAT, false)]
 	public readonly Vector3 Position = position;
@@ -18,56 +18,77 @@ internal unsafe readonly struct VertexAttribs(Vector3 position, Color color)
 
 internal static class Program
 {
-	private const string vertexShaderSource_ = """
-			#version 330 core
-			layout(location = 0) in vec3 aPos;
-			layout(location = 1) in vec4 aColor;
-			
-			out vec4 vColor;
+	private const string vertexShaderSource_ =
+		"""
+		#version 330 core
+		layout(location = 0) in vec3 aPos;
+		layout(location = 1) in vec4 aColor;
 
-			void main()
-			{
-				vColor = aColor;
+		out vec4 vColor;
 
-				gl_Position = vec4(aPos, 1.0);
-			}
+		void main()
+		{
+			vColor = aColor;
+
+			gl_Position = vec4(aPos, 1.0);
+		}
 		""";
 
-	private const string fragmentShaderSource_ = """
-			#version 330 core
-			out vec4 FragColor;
-			
-			in vec4 vColor;
+	private const string fragmentShaderSource_ =
+		"""
+		#version 330 core
+		out vec4 FragColor;
 
-			void main()
-			{
-				FragColor = vColor;
-			}
+		in vec4 vColor;
+
+		void main()
+		{
+			FragColor = vColor;
+		}
 		""";
 
-	private static readonly VertexAttribs[] vertices_ = [
-		new(new (0.0f,  0.5f, 0.0f), Color.Red),  // top
-		new(new (-0.5f, -0.5f, 0.0f), Color.Green),  // bottom left
-		new(new (0.5f, -0.5f, 0.0f), Color.Blue),  // bottom right
+	private static readonly VertexAttribs[] vertices_ =
+	[
+		new(new(0.0f, 0.5f, 0.0f), Color.Red), // top
+		new(new(-0.5f, -0.5f, 0.0f), Color.Green), // bottom left
+		new(new(0.5f, -0.5f, 0.0f), Color.Blue), // bottom right
 	];
 
-	private static unsafe void Main()
+	private unsafe static void Main()
 	{
-		SDL3.SDL_Init(SDL_InitFlags.SDL_INIT_VIDEO);
-		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_DOUBLEBUFFER, 1);
-		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_MINOR_VERSION, 3);
-		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_PROFILE_MASK, SDL3.SDL_GL_CONTEXT_PROFILE_CORE);
-		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_MULTISAMPLESAMPLES, 16);
+		SDL_Init(SDL_InitFlags.SDL_INIT_VIDEO);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_MINOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_MULTISAMPLESAMPLES, 8);
 
-		var window = SDL3.SDL_CreateWindow("GLCS Test", 800, 600, SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_OPENGL);
-		var context = SDL3.SDL_GL_CreateContext(window);
+		var props = SDL_CreateProperties();
+		SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "GLCS Test");
+		SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, 800);
+		SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, 600);
+		SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_HIDDEN_BOOLEAN, true);
+		SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_OPENGL_BOOLEAN, true);
+		SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_RESIZABLE_BOOLEAN, true);
+		var window = SDL_CreateWindowWithProperties(props);
+		SDL_DestroyProperties(props);
+
+		if (window == null)
+			throw new($"Failed to create SDL window: {SDL_GetError()}");
+
+		var context = SDL_GL_CreateContext(window);
+		if (context == null)
+			throw new($"Failed to create GL context: {SDL_GetError()}");
 
 		var closeRequested = false;
 
-		SDL3.SDL_GL_MakeCurrent(window, context);
-		var gl = new GL(static proc => SDL3.SDL_GL_GetProcAddress(proc));
+		SDL_GL_MakeCurrent(window, context);
+		var gl = new GL(static proc => SDL_GL_GetProcAddress(proc));
+
+		Console.WriteLine($"OpenGL Renderer: {gl.GetStringManaged(StringName.GL_RENDERER)}");
+		Console.WriteLine($"OpenGL Version: {gl.GetStringManaged(StringName.GL_VERSION)}");
 
 		var program = new GLProgram(gl);
 		using (var vertexShader = new GLShader(gl, ShaderType.GL_VERTEX_SHADER))
@@ -83,33 +104,40 @@ internal static class Program
 
 		var vao = new GLVertexArray(gl);
 		vao.VertexAttribPointers<VertexAttribs>(vbo);
+		
+		SDL_ShowWindow(window);
 
-		SDL3.SDL_ShowWindow(window);
-
+		SDL_GL_SetSwapInterval(0);
+		
 		while (!closeRequested)
 		{
 			SDL_Event ev;
-			while (SDL3.SDL_PollEvent(&ev))
+			while (SDL_PollEvent(&ev))
 			{
 				switch ((SDL_EventType)ev.type)
 				{
 					case SDL_EventType.SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+
 						closeRequested = true;
 						break;
 				}
 			}
 
+			int width = 0, height = 0;
+			if (SDL_GetWindowSize(window, &width, &height))
+				gl.Viewport(0, 0, width, height);
+
 			gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			gl.Clear(ClearBufferMask.GL_COLOR_BUFFER_BIT);
 			vao.Draw(PrimitiveType.GL_TRIANGLES, 0, 3, program);
-			SDL3.SDL_GL_SwapWindow(window);
+			SDL_GL_SwapWindow(window);
 		}
 
 		vao.Dispose();
 		vbo.Dispose();
 		program.Dispose();
 
-		SDL3.SDL_GL_DestroyContext(context);
-		SDL3.SDL_DestroyWindow(window);
+		SDL_GL_DestroyContext(context);
+		SDL_DestroyWindow(window);
 	}
 }

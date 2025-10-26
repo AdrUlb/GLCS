@@ -1,8 +1,6 @@
-﻿using GLCS;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using static GLCS.GL;
 
 namespace GLCS.Abstractions;
 

@@ -1,6 +1,4 @@
-﻿using static GLCS.GL;
-
-namespace GLCS.Abstractions;
+﻿namespace GLCS.Abstractions;
 
 public sealed class GLBuffer(GL gl) : IDisposable
 {

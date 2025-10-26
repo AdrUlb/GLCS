@@ -14,12 +14,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ppy.SDL3-CS" Version="2025.920.0" />
+		<ProjectReference Include="..\GLCS.Abstractions\GLCS.Abstractions.csproj" />
+		<ProjectReference Include="..\GLCS\GLCS.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\GLCS.Abstractions\GLCS.Abstractions.csproj" />
-		<ProjectReference Include="..\GLCS\GLCS.csproj" />
+	  <PackageReference Include="ppy.SDL3-CS" Version="2025.920.0" />
 	</ItemGroup>
 
 </Project>
