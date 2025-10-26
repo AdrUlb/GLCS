@@ -58,6 +58,8 @@ internal static class Program
 		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_MINOR_VERSION, 3);
 		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_CONTEXT_PROFILE_MASK, SDL3.SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL3.SDL_GL_SetAttribute(SDL_GLAttr.SDL_GL_MULTISAMPLESAMPLES, 16);
 
 		var window = SDL3.SDL_CreateWindow("GLCS Test", 800, 600, SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_OPENGL);
 		var context = SDL3.SDL_GL_CreateContext(window);
@@ -67,10 +69,7 @@ internal static class Program
 		SDL3.SDL_GL_MakeCurrent(window, context);
 		var gl = new GL(static proc => SDL3.SDL_GL_GetProcAddress(proc));
 
-		var vbo = new GLBuffer(gl);
-		var vao = new GLVertexArray(gl);
 		var program = new GLProgram(gl);
-
 		using (var vertexShader = new GLShader(gl, GLShaderType.Vertex))
 		using (var fragmentShader = new GLShader(gl, GLShaderType.Fragment))
 		{
@@ -79,7 +78,10 @@ internal static class Program
 			program.Link(vertexShader, fragmentShader);
 		}
 
+		var vbo = new GLBuffer(gl);
 		vbo.Data(vertices_, GLBufferUsage.StaticDraw);
+
+		var vao = new GLVertexArray(gl);
 		vao.VertexAttribPointers<VertexAttribs>(vbo);
 
 		SDL3.SDL_ShowWindow(window);
@@ -103,9 +105,9 @@ internal static class Program
 			SDL3.SDL_GL_SwapWindow(window);
 		}
 
-		program.Dispose();
 		vao.Dispose();
 		vbo.Dispose();
+		program.Dispose();
 
 		SDL3.SDL_GL_DestroyContext(context);
 		SDL3.SDL_DestroyWindow(window);
