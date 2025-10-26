@@ -3,6 +3,14 @@ using System.Xml;
 
 namespace GLCS.Generator;
 
+internal sealed class GLEnum(string name, string type, bool isBitmask)
+{
+	public readonly string Name = name;
+	public readonly string Type = type;
+	public readonly bool IsBitmask = isBitmask;
+	public readonly List<string> Members = [];
+}
+
 internal class Program
 {
 	private static void Main(string[] args)
@@ -18,6 +26,9 @@ internal class Program
 		constantsBuilder
 			.AppendLine("public unsafe partial class GL")
 			.AppendLine("{");
+
+		var enumsBuilder = new StringBuilder();
+		GenerateUsingsAndNamespace(enumsBuilder);
 
 		var procsBuilder = new StringBuilder();
 		GenerateUsingsAndNamespace(procsBuilder);
@@ -42,19 +53,34 @@ internal class Program
 		var enumsElements = rootElement.GetElementsByTagName("enums");
 		var commandsElements = rootElement.GetElementsByTagName("commands");
 
+		var groups = new Dictionary<string, GLEnum>();
+
 		foreach (XmlNode enumsElement in enumsElements)
-			GenerateEnums(enumsElement, constantsBuilder);
+			GenerateEnums(enumsElement, groups, constantsBuilder);
 
 		foreach (XmlNode commandsElement in commandsElements)
-			GenerateCommands(commandsElement, procsBuilder, functionsBuilder);
+			GenerateCommands(commandsElement, groups, procsBuilder, functionsBuilder);
+
+		foreach (var (groupName, group) in groups)
+		{
+			if (group.IsBitmask)
+				enumsBuilder.AppendLine("[System.Flags]");
+			var groupType = groupName == "SpecialNumbers" ? "GLuint64" : group.Type;
+			enumsBuilder.AppendLine($"public enum {groupName} : {groupType}");
+			enumsBuilder.AppendLine("{");
+			foreach (var member in group.Members)
+				enumsBuilder.Append('\t').Append(member).Append(" = GLCS.GL.").Append(member).AppendLine(",");
+			enumsBuilder.AppendLine("}");
+		}
 
 		constantsBuilder.AppendLine("}");
 		procsBuilder.AppendLine("}");
 		functionsBuilder.AppendLine("}");
 
-		File.WriteAllText("GL.Constants.cs", constantsBuilder.ToString());
-		File.WriteAllText("GL.Procs.cs", procsBuilder.ToString());
-		File.WriteAllText("GL.Functions.cs", functionsBuilder.ToString());
+		File.WriteAllText("GL.Constants.g.cs", constantsBuilder.ToString());
+		File.WriteAllText("GL.Enums.g.cs", enumsBuilder.ToString());
+		File.WriteAllText("GL.Procs.g.cs", procsBuilder.ToString());
+		File.WriteAllText("GL.Functions.g.cs", functionsBuilder.ToString());
 	}
 
 	private static void GenerateUsingsAndNamespace(StringBuilder builder)
@@ -109,7 +135,7 @@ internal class Program
 			.AppendLine();
 	}
 
-	private static void GenerateEnums(XmlNode enumsElement, StringBuilder builder)
+	private static void GenerateEnums(XmlNode enumsElement, Dictionary<string, GLEnum> groups, StringBuilder constantsBuilder)
 	{
 		var isBitmask = enumsElement.Attributes?["type"]?.Value == "bitmask";
 
@@ -120,37 +146,53 @@ internal class Program
 			if (node.NodeType != XmlNodeType.Element)
 				continue;
 
+			if (node.Name != "enum")
+				continue;
+
+			var groupList = node.Attributes?["group"]?.Value?.Split(",");
 			var enumMemberName = node.Attributes?["name"]?.Value;
 			var enumMemberValue = node.Attributes?["value"]?.Value;
 			var enumMemberApi = node.Attributes?["api"]?.Value;
-			var enumMemberType = node.Attributes?["type"]?.Value switch
+			enumType = node.Attributes?["type"]?.Value switch
 			{
 				"u" => "GLuint",
 				"ull" => "GLuint64",
 				_ => enumType
 			};
 
-			if (enumMemberApi != null || enumMemberType == null || enumMemberName == null || enumMemberValue == null)
+			if (enumMemberApi != null || enumType == null || enumMemberName == null || enumMemberValue == null)
 				continue;
 
 			enumMemberName = enumMemberName.Trim();
 
-			builder
+			if (groupList != null)
+			{
+				foreach (var groupName in groupList)
+				{
+					if (!groups.TryGetValue(groupName, out var group))
+						groups.Add(groupName, group = new(groupName, enumType, isBitmask));
+
+					group.Members.Add(enumMemberName);
+				}
+			}
+
+			constantsBuilder
 				.Append('\t')
 				.Append("public const ")
-				.Append(enumMemberType)
+				.Append(enumType)
 				.Append(' ')
 				.Append(enumMemberName)
 				.Append(" = unchecked((")
-				.Append(enumMemberType)
+				.Append(enumType)
 				.Append(")(")
 				.Append(enumMemberValue).AppendLine("));");
 		}
 	}
 
-	class GlParam(string text)
+	class GlParam(string text, string? group)
 	{
 		public string Text = text;
+		public string? Group = group;
 		public string? Name = null;
 		public string? Type = null;
 	}
@@ -162,7 +204,21 @@ internal class Program
 		public readonly List<GlParam> Params = param;
 	}
 
-	private static void GenerateCommands(XmlNode commandsElement, StringBuilder procsBuilder, StringBuilder functionsBuilder)
+	private static string GetEnumType(string group, string type)
+	{
+		if (group != null)
+		{
+			var index = type.IndexOf('*');
+			if (index >= 0)
+				group += type[index..];
+
+			return group;
+		}
+		
+		return type;
+	}
+
+	private static void GenerateCommands(XmlNode commandsElement, Dictionary<string, GLEnum> groups, StringBuilder procsBuilder, StringBuilder functionsBuilder)
 	{
 		var funcs = new List<GlFunc>();
 
@@ -195,7 +251,9 @@ internal class Program
 				if (n.NodeType != XmlNodeType.Element || n.Name != "param")
 					continue;
 
-				param.Add(new(n.InnerText));
+				var group = n.Attributes?["group"]?.Value;
+
+				param.Add(new(n.InnerText, group));
 			}
 
 			if (proto == null)
@@ -266,8 +324,8 @@ internal class Program
 			var memberName = func.Name[2..];
 			functionsBuilder
 				.Append('\t').AppendLine("[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]")
-				.Append('\t').Append("public ").Append(func.ReturnType).Append(' ').Append(memberName).Append("(").Append(string.Join(", ", func.Params.Select(p => $"{p.Type} {p.Name}")))
-				.Append(") => ").Append(delegateName).Append('(').Append(string.Join(", ", func.Params.Select(p => p.Name))).AppendLine(");");
+				.Append('\t').Append("public ").Append(func.ReturnType).Append(' ').Append(memberName).Append("(").Append(string.Join(", ", func.Params.Select(p => $"{(GetEnumType(p.Group, p.Type))} {p.Name}")))
+				.Append(") => ").Append(delegateName).Append('(').Append(string.Join(", ", func.Params.Select(p => $"({p.Type}){p.Name}"))).AppendLine(");");
 		}
 	}
 }

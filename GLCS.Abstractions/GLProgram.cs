@@ -12,7 +12,7 @@ public sealed class GLProgram(GL gl) : IDisposable
 			gl.AttachShader(Handle, shader);
 
 		gl.LinkProgram(Handle);
-		if (gl.GetProgram(Handle, GL_LINK_STATUS) == GL_FALSE)
+		if (gl.GetProgram(Handle, ProgramPropertyARB.GL_LINK_STATUS) == GL_FALSE)
 			throw new($"Program linking failed: {gl.GetProgramInfoLog(Handle)}.");
 
 		foreach (var shader in shaders)

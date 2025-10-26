@@ -8,11 +8,11 @@ namespace GLCS.Abstractions;
 
 public readonly struct GLVertexAttribsInfo<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T> where T : struct
 {
-	private readonly struct AttribInfo(uint index, int size, uint type, bool normalized, nint offset)
+	private readonly struct AttribInfo(uint index, int size, VertexAttribPointerType type, bool normalized, nint offset)
 	{
 		public readonly uint Index = index;
 		public readonly int Size = size;
-		public readonly uint Type = type;
+		public readonly VertexAttribPointerType Type = type;
 		public readonly bool Normalized = normalized;
 		public readonly nint Offset = offset;
 	}

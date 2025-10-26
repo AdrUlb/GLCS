@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GLCS.Generator": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Stuff\\Source\\GLCS\\GLCS.Generator\\gl.xml\""
+    }
+  }
+}

@@ -4,9 +4,12 @@
 		<PropertyGroup>
 			<GLCS_Generator_TempDir>$(IntermediateOutputPath)/GLCS_Generator/</GLCS_Generator_TempDir>
 		</PropertyGroup>
+		
 		<RemoveDir Directories="$(GLCS_Generator_TempDir)" Condition="Exists('$(GLCS_Generator_TempDir)')" />
 		<MakeDir Directories="$(GLCS_Generator_TempDir)" />
+		
 		<Exec Command="dotnet run -c Release --project $(MSBuildThisFileDirectory)/GLCS.Generator.csproj $(MSBuildThisFileDirectory)gl.xml" WorkingDirectory="$(GLCS_Generator_TempDir)"/>
+		
 		<ItemGroup>
 			<Compile Include="$(GLCS_Generator_TempDir)**/*.cs"/>
 		</ItemGroup>

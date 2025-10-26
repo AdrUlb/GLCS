@@ -9,10 +9,10 @@ namespace Test;
 
 internal unsafe readonly struct VertexAttribs(Vector3 position, Color color)
 {
-	[GLVertexAttrib(0, 3, GL_FLOAT, false)]
+	[GLVertexAttrib(0, 3, VertexAttribPointerType.GL_FLOAT, false)]
 	public readonly Vector3 Position = position;
 
-	[GLVertexAttrib(1, 4, GL_FLOAT, false)]
+	[GLVertexAttrib(1, 4, VertexAttribPointerType.GL_FLOAT, false)]
 	public readonly Vector4 Color = new(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);
 }
 
@@ -70,8 +70,8 @@ internal static class Program
 		var gl = new GL(static proc => SDL3.SDL_GL_GetProcAddress(proc));
 
 		var program = new GLProgram(gl);
-		using (var vertexShader = new GLShader(gl, GLShaderType.Vertex))
-		using (var fragmentShader = new GLShader(gl, GLShaderType.Fragment))
+		using (var vertexShader = new GLShader(gl, ShaderType.GL_VERTEX_SHADER))
+		using (var fragmentShader = new GLShader(gl, ShaderType.GL_FRAGMENT_SHADER))
 		{
 			vertexShader.Compile(vertexShaderSource_);
 			fragmentShader.Compile(fragmentShaderSource_);
@@ -79,7 +79,7 @@ internal static class Program
 		}
 
 		var vbo = new GLBuffer(gl);
-		vbo.Data(vertices_, GLBufferUsage.StaticDraw);
+		vbo.Data(vertices_, BufferUsageARB.GL_STATIC_DRAW);
 
 		var vao = new GLVertexArray(gl);
 		vao.VertexAttribPointers<VertexAttribs>(vbo);
@@ -100,8 +100,8 @@ internal static class Program
 			}
 
 			gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			gl.Clear(GL_COLOR_BUFFER_BIT);
-			vao.Draw(GLDrawMode.Triangles, 0, 3, program);
+			gl.Clear(ClearBufferMask.GL_COLOR_BUFFER_BIT);
+			vao.Draw(PrimitiveType.GL_TRIANGLES, 0, 3, program);
 			SDL3.SDL_GL_SwapWindow(window);
 		}
 

@@ -25,7 +25,7 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 		DeleteBuffers(1, &buffer);
 	}
 
-	public void BufferData<T>(uint target, ReadOnlySpan<T> data, uint usage) where T : unmanaged
+	public void BufferData<T>(BufferTargetARB target, ReadOnlySpan<T> data, BufferUsageARB usage) where T : unmanaged
 	{
 		fixed (T* dataPtr = data)
 			BufferData(target, data.Length * sizeof(T), dataPtr, usage);
@@ -49,13 +49,13 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 		DeleteVertexArrays(1, &vao);
 	}
 
-	public void GetShaderiv(uint shader, uint pname, Span<int> @params)
+	public void GetShaderiv(uint shader, ShaderParameterName pname, Span<int> @params)
 	{
 		fixed (int* paramsPtr = @params)
 			GetShaderiv(shader, pname, paramsPtr);
 	}
 
-	public int GetShader(uint shader, uint pname)
+	public int GetShader(uint shader, ShaderParameterName pname)
 	{
 		var ret = 0;
 		GetShaderiv(shader, pname, &ret);
@@ -72,7 +72,7 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 
 	public string GetShaderInfoLog(uint shader)
 	{
-		var infoLogLength = GetShader(shader, GL_INFO_LOG_LENGTH);
+		var infoLogLength = GetShader(shader, ShaderParameterName.GL_INFO_LOG_LENGTH);
 
 		var infoLog = stackalloc byte[infoLogLength];
 		GetShaderInfoLog(shader, infoLogLength, null, infoLog);
@@ -80,13 +80,13 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 		return Encoding.UTF8.GetString(infoLog, infoLogLength);
 	}
 
-	public void GetProgramiv(uint program, uint pname, Span<int> @params)
+	public void GetProgramiv(uint program, ProgramPropertyARB pname, Span<int> @params)
 	{
 		fixed (int* paramsPtr = @params)
 			GetProgramiv(program, pname, paramsPtr);
 	}
 
-	public int GetProgram(uint program, uint pname)
+	public int GetProgram(uint program, ProgramPropertyARB pname)
 	{
 		var ret = 0;
 		GetProgramiv(program, pname, &ret);
@@ -96,7 +96,7 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 	public string GetProgramInfoLog(uint program)
 	{
-		var infoLogLength = GetProgram(program, GL_INFO_LOG_LENGTH);
+		var infoLogLength = GetProgram(program, ProgramPropertyARB.GL_INFO_LOG_LENGTH);
 
 		var infoLog = stackalloc byte[infoLogLength];
 		GetProgramInfoLog(program, infoLogLength, null, infoLog);
@@ -104,7 +104,7 @@ public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 		return Encoding.UTF8.GetString(infoLog, infoLogLength);
 	}
 
-	public void VertexAttribPointer(uint @index, int @size, uint @type, bool @normalized, int @stride, nint offset)
+	public void VertexAttribPointer(uint @index, int @size, VertexAttribPointerType @type, bool @normalized, int @stride, nint offset)
 	{
 		VertexAttribPointer(index, size, type, normalized, stride, (void*)offset);
 	}
