@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\GLCS.Generator\Generate.targets"/>
-
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -9,5 +7,9 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\GLCS\GLCS.csproj" />
+	</ItemGroup>
 
 </Project>

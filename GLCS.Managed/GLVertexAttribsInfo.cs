@@ -2,7 +2,16 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace GLCS.Abstractions;
+namespace GLCS.Managed;
+
+[AttributeUsage(AttributeTargets.Field)]
+public sealed class GLVertexAttribAttribute(uint index, int size, VertexAttribPointerType type, bool normalized) : Attribute
+{
+	public readonly uint Index = index;
+	public readonly int Size = size;
+	public readonly VertexAttribPointerType Type = type;
+	public readonly bool Normalized = normalized;
+}
 
 public readonly struct GLVertexAttribsInfo<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T> where T : struct
 {
@@ -38,12 +47,12 @@ public readonly struct GLVertexAttribsInfo<[DynamicallyAccessedMembers(Dynamical
 		}
 	}
 
-	public void VertexAttribPointers(GL gl)
+	public unsafe void VertexAttribPointers(ManagedGL gl)
 	{
 		foreach (var attrib in attribs_)
 		{
-			gl.VertexAttribPointer(attrib.Index, attrib.Size, attrib.Type, attrib.Normalized, Stride, attrib.Offset);
-			gl.EnableVertexAttribArray(attrib.Index);
+			gl.Unmanaged.VertexAttribPointer(attrib.Index, attrib.Size, attrib.Type, attrib.Normalized, Stride, (void*)attrib.Offset);
+			gl.Unmanaged.EnableVertexAttribArray(attrib.Index);
 		}
 	}
 }

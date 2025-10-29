@@ -69,7 +69,7 @@ internal class Program
 			enumsBuilder.AppendLine($"public enum {groupName} : {groupType}");
 			enumsBuilder.AppendLine("{");
 			foreach (var member in group.Members)
-				enumsBuilder.Append('\t').Append(member).Append(" = GLCS.GL.").Append(member).AppendLine(",");
+				enumsBuilder.Append('\t').Append(EnumMemberName(member)).Append(" = GLCS.GL.").Append(ConstantName(member)).AppendLine(",");
 			enumsBuilder.AppendLine("}");
 		}
 
@@ -81,6 +81,40 @@ internal class Program
 		File.WriteAllText("GL.Enums.g.cs", enumsBuilder.ToString());
 		File.WriteAllText("GL.Procs.g.cs", procsBuilder.ToString());
 		File.WriteAllText("GL.Functions.g.cs", functionsBuilder.ToString());
+	}
+
+	private static string ConstantName(string value)
+	{
+		if (!value.StartsWith("GL_"))
+			return value;
+
+		value = value[3..];
+		if (char.IsAsciiDigit(value[0]))
+			value = "N" + value;
+		return value;
+	}
+
+	private static string EnumMemberName(string member)
+	{
+		if (!member.StartsWith("GL_"))
+			return member;
+
+		member = member[3..];
+		var parts = member.Split('_', StringSplitOptions.RemoveEmptyEntries);
+		var sb = new StringBuilder();
+		foreach (var part in parts)
+		{
+			var firstChar = part[0];
+			if (char.IsAsciiDigit(firstChar))
+			{
+				sb.Append('N').Append(firstChar);
+			}
+			else
+				sb.Append(char.ToUpper(firstChar));
+			if (part.Length > 1)
+				sb.Append(part[1..].ToLower());
+		}
+		return sb.ToString();
 	}
 
 	private static void GenerateUsingsAndNamespace(StringBuilder builder)
@@ -181,7 +215,7 @@ internal class Program
 				.Append("public const ")
 				.Append(enumType)
 				.Append(' ')
-				.Append(enumMemberName)
+				.Append(ConstantName(enumMemberName))
 				.Append(" = unchecked((")
 				.Append(enumType)
 				.Append(")(")
@@ -214,7 +248,7 @@ internal class Program
 
 			return group;
 		}
-		
+
 		return type;
 	}
 
@@ -260,10 +294,6 @@ internal class Program
 				continue;
 
 			proto = proto.Replace("const ", "").Replace("const*", "*");
-			/*
-			if (proto.StartsWith("const "))
-				proto = proto[6..];
-			*/
 
 			var splitIndex = proto.IndexOf('*');
 			if (splitIndex < 0)
@@ -272,32 +302,21 @@ internal class Program
 			var returnType = proto[..splitIndex].Replace(" *", "*").Trim();
 			for (var i = 0; i < param.Count; i++)
 			{
-				var changed = true;
-				while (changed)
-				{
-					changed = false;
-					if (param[i].Text.StartsWith("struct "))
-					{
-						param[i].Text = param[i].Text[7..];
-						changed = true;
-					}
+				var paramText = param[i].Text
+					.Replace("const*", "*")
+					.Replace("struct ", "")
+					.Replace("const ", "")
+					.Replace("* ", "*")
+					.Replace(" *", "*")
+					;
 
-					if (param[i].Text.StartsWith("const "))
-					{
-						param[i].Text = param[i].Text[6..];
-						changed = true;
-					}
-				}
-
-				param[i].Text = param[i].Text.Replace("* ", "*").Replace(" *", "*").Replace("const*", "*");
-
-				var index = param[i].Text.LastIndexOf('*');
+				var index = paramText.LastIndexOf('*');
 				if (index < 0)
-					index = param[i].Text.LastIndexOf(' ');
+					index = paramText.LastIndexOf(' ');
 				index++;
-				param[i].Type = param[i].Text[..index].Trim();
+				param[i].Type = paramText[..index].Trim();
 
-				var pname = param[i].Text[index..].Trim();
+				var pname = paramText[index..].Trim();
 				//if (pname is "params" or "event")
 				pname = "@" + pname;
 				param[i].Name = pname;

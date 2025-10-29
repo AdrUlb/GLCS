@@ -1,6 +1,7 @@
 <Solution>
-  <Project Path="GLCS.Abstractions/GLCS.Abstractions.csproj" Id="e2d50d56-30c0-4987-b03f-c1fec05b976a" />
   <Project Path="GLCS.Generator/GLCS.Generator.csproj" />
+  <Project Path="GLCS.Managed/GLCS.Managed.csproj" Id="e2d50d56-30c0-4987-b03f-c1fec05b976a" />
   <Project Path="GLCS/GLCS.csproj" />
+  <Project Path="SDL3CS/SDL3CS.csproj" Id="5c833d75-062c-4200-bc7e-e66e8b56a2ec" />
   <Project Path="Test/Test.csproj" />
 </Solution>
