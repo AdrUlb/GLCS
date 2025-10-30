@@ -59,7 +59,7 @@ internal class Program
 			GenerateEnums(enumsElement, groups, constantsBuilder);
 
 		foreach (XmlNode commandsElement in commandsElements)
-			GenerateCommands(commandsElement, groups, procsBuilder, functionsBuilder);
+			GenerateCommands(commandsElement, procsBuilder, functionsBuilder);
 
 		foreach (var (groupName, group) in groups)
 		{
@@ -252,7 +252,7 @@ internal class Program
 		return type;
 	}
 
-	private static void GenerateCommands(XmlNode commandsElement, Dictionary<string, GLEnum> groups, StringBuilder procsBuilder, StringBuilder functionsBuilder)
+	private static void GenerateCommands(XmlNode commandsElement, StringBuilder procsBuilder, StringBuilder functionsBuilder)
 	{
 		var funcs = new List<GlFunc>();
 
@@ -343,7 +343,7 @@ internal class Program
 			var memberName = func.Name[2..];
 			functionsBuilder
 				.Append('\t').AppendLine("[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]")
-				.Append('\t').Append("public ").Append(func.ReturnType).Append(' ').Append(memberName).Append("(").Append(string.Join(", ", func.Params.Select(p => $"{(GetEnumType(p.Group, p.Type))} {p.Name}")))
+				.Append('\t').Append("public ").Append(func.ReturnType).Append(' ').Append(memberName).Append('(').Append(string.Join(", ", func.Params.Select(p => $"{GetEnumType(p.Group!, p.Type!)} {p.Name}")))
 				.Append(") => ").Append(delegateName).Append('(').Append(string.Join(", ", func.Params.Select(p => $"({p.Type}){p.Name}"))).AppendLine(");");
 		}
 	}

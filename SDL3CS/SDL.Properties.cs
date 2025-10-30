@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace SDL3CS;
 
-public static partial class SDL
+public static partial class Sdl
 {
 	public enum PropertyType : uint
 	{

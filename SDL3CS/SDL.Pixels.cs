@@ -1,12 +1,16 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace SDL3CS;
 
-public static partial class SDL
+public static partial class Sdl
 {
-	public enum PixelType : uint
+	public const byte AlphaOpaque = 255;
+	public const float AlphaOpaqueFloat = 1.0f;
+	public const byte AlphaTransparent = 0;
+	public const float AlphaTransparentFloat = 0.0f;
+
+	public enum PixelType
 	{
 		Unknown,
 		Index1,
@@ -23,14 +27,14 @@ public static partial class SDL
 		Index2
 	}
 
-	public enum BitmapOrder : uint
+	public enum BitmapOrder
 	{
 		None,
 		Order4321,
 		Order1234
 	}
 
-	public enum PackedOrder : uint
+	public enum PackedOrder
 	{
 		None,
 		Xrgb,
@@ -43,7 +47,7 @@ public static partial class SDL
 		Bgra
 	}
 
-	public enum ArrayOrder : uint
+	public enum ArrayOrder
 	{
 		None,
 		Rgb,
@@ -54,7 +58,7 @@ public static partial class SDL
 		Abgr
 	}
 
-	public enum PackedLayout : uint
+	public enum PackedLayout
 	{
 		None,
 		Layout332,
@@ -67,68 +71,7 @@ public static partial class SDL
 		Layout1010102
 	}
 
-	public const byte AlphaOpaque = 255;
-	public const float AlphaOpaqueFloat = 1.0f;
-	public const byte AlphaTransparent = 0;
-	public const float AlphaTransparentFloat = 0.0f;
-
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static PixelFormat DefinePixelFourCc(char a, char b, char c, char d) => (PixelFormat)DefineFourCc(a, b, c, d);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static PixelFormat DefinePixelFormat(PixelType type, uint order, PackedLayout layout, byte bits, byte bytes) =>
-		(PixelFormat)((1u << 28) | ((uint)type << 24) | (order << 20) | ((uint)layout << 16) | ((uint)bits << 8) | ((uint)bytes << 0));
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static uint GetFormatPixelFlag(PixelFormat format) => ((uint)format >> 28) & 0x0F;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static PixelType GetFormatPixelType(PixelFormat format) => (PixelType)((((uint)format) >> 24) & 0x0F);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static uint GetFormatPixelOrder(PixelFormat format) => ((uint)format >> 20) & 0x0F;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static PackedLayout GetFormatPixelLayout(PixelFormat format) => (PackedLayout)((((uint)format) >> 16) & 0x0F);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static byte GetFormatBitsPerPixel(PixelFormat format) => (byte)(IsPixelFormatFourCc(format) ? 0 : ((((uint)format) >> 8) & 0xFF));
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static byte GetFormatBytesPerPixel(PixelFormat format) => IsPixelFormatFourCc(format)
-		? (byte)((format is PixelFormat.yuy2 or PixelFormat.Uyvy or PixelFormat.Yvyu or PixelFormat.P010) ? 2 : 1)
-		: (byte)(((uint)format >> 0) & 0xFF);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormatIndexed(PixelFormat format) => !IsPixelFormatFourCc(format) &&
-		GetFormatPixelType(format) is PixelType.Index1 or PixelType.Index2 or PixelType.Index4 or PixelType.Index8;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormatPacked(PixelFormat format) => !IsPixelFormatFourCc(format) &&
-		GetFormatPixelType(format) is PixelType.Packed8 or PixelType.Packed16 or PixelType.Packed32;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormatArray(PixelFormat format) => !IsPixelFormatFourCc(format) &&
-		GetFormatPixelType(format) is PixelType.ArrayU8 or PixelType.ArrayU16 or PixelType.ArrayU32 or PixelType.ArrayF16 or PixelType.ArrayF32;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormat10Bit(PixelFormat format) => !IsPixelFormatFourCc(format) &&
-		GetFormatPixelType(format) == PixelType.Packed32 && GetFormatPixelLayout(format) == PackedLayout.Layout2101010;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormatFloat(PixelFormat format) => !IsPixelFormatFourCc(format) &&
-		GetFormatPixelType(format) is PixelType.ArrayF16 or PixelType.ArrayF32;
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormatAlpha(PixelFormat format) =>
-		(IsPixelFormatPacked(format) && ((PackedOrder)GetFormatPixelOrder(format) is PackedOrder.Argb or PackedOrder.Rgba or PackedOrder.Abgr or PackedOrder.Bgra)) ||
-		(IsPixelFormatArray(format) && ((ArrayOrder)GetFormatPixelOrder(format) is ArrayOrder.Argb or ArrayOrder.Rgba or ArrayOrder.Abgr or ArrayOrder.Bgra));
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsPixelFormatFourCc(PixelFormat format) => format != 0 && (GetFormatPixelFlag(format) != 1);
-
-	public enum PixelFormat : uint
+	public enum PixelFormat
 	{
 		Unknown = 0,
 		Index1LSB = 0x11100100,
@@ -202,21 +145,21 @@ public static partial class SDL
 		Xbgr32 = Rgbx8888
 	}
 
-	public enum ColorType : uint
+	public enum ColorType
 	{
 		Unknown = 0,
 		Rgb = 1,
 		Ycbcr = 2
 	}
 
-	public enum ColorRange : uint
+	public enum ColorRange
 	{
 		Unknown = 0,
 		Limited = 1,
 		Full = 2
 	}
 
-	public enum ColorPrimaries : uint
+	public enum ColorPrimaries
 	{
 		Unknown = 0,
 		Bt709 = 1,
@@ -234,7 +177,7 @@ public static partial class SDL
 		Custom = 31
 	}
 
-	public enum TransferCharacteristics : uint
+	public enum TransferCharacteristics
 	{
 		Unknown = 0,
 		Bt709 = 1,
@@ -257,7 +200,7 @@ public static partial class SDL
 		Custom = 31
 	}
 
-	public enum MatrixCoefficients : uint
+	public enum MatrixCoefficients
 	{
 		Identity = 0,
 		Bt709 = 1,
@@ -276,13 +219,222 @@ public static partial class SDL
 		Custom = 31
 	}
 
-	public enum ChromaLocation : uint
+	public enum ChromaLocation
 	{
 		None = 0,
 		Left = 1,
 		Center = 2,
 		TopLeft = 3
 	}
+
+	public enum Colorspace
+	{
+		Unknown = 0,
+		Srgb = 0x120005a0,
+		SrgbLinear = 0x12000500,
+		HDR10 = 0x12002600,
+		JPEG = 0x220004c6,
+		Bt601Limited = 0x211018c6,
+		Bt601Full = 0x221018c6,
+		Bt709Limited = 0x21100421,
+		Bt709Full = 0x22100421,
+		Bt2020Limited = 0x21102609,
+		Bt2020Full = 0x22102609,
+		RgbDefault = Srgb,
+		YuvDefault = Bt601Limited
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Color
+	{
+		public byte R;
+		public byte G;
+		public byte B;
+		public byte A;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct FColor
+	{
+		public float R;
+		public float G;
+		public float B;
+		public float A;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public readonly unsafe struct Palette
+	{
+		private readonly int numColors_;
+		private readonly Color* colors_;
+		private readonly uint version_;
+		private readonly int refCount_;
+
+		public Span<Color> Colors
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => new(colors_, numColors_);
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public unsafe struct PixelFormatDetails
+	{
+		public PixelFormat Format;
+		public byte BitsPerPixel;
+		public byte BytesPerPixel;
+		private fixed byte padding_[2];
+		public uint RMask;
+		public uint GMask;
+		public uint BMask;
+		public uint AMask;
+		public byte RBits;
+		public byte GBits;
+		public byte BBits;
+		public byte ABits;
+		public byte RShift;
+		public byte GShift;
+		public byte BShift;
+		public byte AShift;
+	}
+
+	private static partial class Native
+	{
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial string SDL_GetPixelFormatName(PixelFormat format);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static partial bool SDL_GetMasksForPixelFormat(PixelFormat format, out int bpp, out uint rmask, out uint gmask, out uint bmask, out uint amask);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial PixelFormat SDL_GetPixelFormatForMasks(int bpp, uint rmask, uint gmask, uint bmask, uint amask);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial Ptr<PixelFormatDetails> SDL_GetPixelFormatDetails(PixelFormat format);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial Ptr<Palette> SDL_CreatePalette(int ncolors);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static partial bool SDL_SetPaletteColors(in Palette palette, in Color colors, int firstcolor, int ncolors);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial void SDL_DestroyPalette(in Palette palette);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial uint SDL_MapRGB(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial uint SDL_MapRGBA(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b, byte a);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial void SDL_GetRGB(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial void SDL_GetRGBA(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b, out byte a);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string GetPixelFormatName(PixelFormat format) => Native.SDL_GetPixelFormatName(format);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetMasksForPixelFormat(PixelFormat format, out int bpp, out uint rmask, out uint gmask, out uint bmask, out uint amask) => Native.SDL_GetMasksForPixelFormat(format, out bpp, out rmask, out gmask, out bmask, out amask);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PixelFormat GetPixelFormatForMasks(int bpp, uint rmask, uint gmask, uint bmask, uint amask) => Native.SDL_GetPixelFormatForMasks(bpp, rmask, gmask, bmask, amask);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<PixelFormatDetails> GetPixelFormatDetails(PixelFormat format) => Native.SDL_GetPixelFormatDetails(format);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<Palette> CreatePalette(int ncolors) => Native.SDL_CreatePalette(ncolors);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetPaletteColors(in Palette palette, in Color colors, int firstcolor, int ncolors) => Native.SDL_SetPaletteColors(palette, colors, firstcolor, ncolors);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void DestroyPalette(in Palette palette) => Native.SDL_DestroyPalette(palette);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint MapRGB(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b) => Native.SDL_MapRGB(format, palette, r, g, b);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint MapRGBA(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b, byte a) => Native.SDL_MapRGBA(format, palette, r, g, b, a);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void GetRGB(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b) => Native.SDL_GetRGB(pixelvalue, format, palette, out r, out g, out b);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void GetRGBA(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b, out byte a) => Native.SDL_GetRGBA(pixelvalue, format, palette, out r, out g, out b, out a);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PixelFormat DefinePixelFourCc(char a, char b, char c, char d) => (PixelFormat)DefineFourCc(a, b, c, d);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PixelFormat DefinePixelFormat(PixelType type, uint order, PackedLayout layout, byte bits, byte bytes) =>
+		(PixelFormat)((1u << 28) | ((uint)type << 24) | (order << 20) | ((uint)layout << 16) | ((uint)bits << 8) | ((uint)bytes << 0));
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint GetFormatPixelFlag(PixelFormat format) => ((uint)format >> 28) & 0x0F;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PixelType GetFormatPixelType(PixelFormat format) => (PixelType)((((uint)format) >> 24) & 0x0F);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint GetFormatPixelOrder(PixelFormat format) => ((uint)format >> 20) & 0x0F;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PackedLayout GetFormatPixelLayout(PixelFormat format) => (PackedLayout)((((uint)format) >> 16) & 0x0F);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static byte GetFormatBitsPerPixel(PixelFormat format) => (byte)(IsPixelFormatFourCc(format) ? 0 : ((((uint)format) >> 8) & 0xFF));
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static byte GetFormatBytesPerPixel(PixelFormat format) => IsPixelFormatFourCc(format)
+		? (byte)((format is PixelFormat.yuy2 or PixelFormat.Uyvy or PixelFormat.Yvyu or PixelFormat.P010) ? 2 : 1)
+		: (byte)(((uint)format >> 0) & 0xFF);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormatIndexed(PixelFormat format) => !IsPixelFormatFourCc(format) &&
+		GetFormatPixelType(format) is PixelType.Index1 or PixelType.Index2 or PixelType.Index4 or PixelType.Index8;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormatPacked(PixelFormat format) => !IsPixelFormatFourCc(format) &&
+		GetFormatPixelType(format) is PixelType.Packed8 or PixelType.Packed16 or PixelType.Packed32;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormatArray(PixelFormat format) => !IsPixelFormatFourCc(format) &&
+		GetFormatPixelType(format) is PixelType.ArrayU8 or PixelType.ArrayU16 or PixelType.ArrayU32 or PixelType.ArrayF16 or PixelType.ArrayF32;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormat10Bit(PixelFormat format) => !IsPixelFormatFourCc(format) &&
+		GetFormatPixelType(format) == PixelType.Packed32 && GetFormatPixelLayout(format) == PackedLayout.Layout2101010;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormatFloat(PixelFormat format) => !IsPixelFormatFourCc(format) &&
+		GetFormatPixelType(format) is PixelType.ArrayF16 or PixelType.ArrayF32;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormatAlpha(PixelFormat format) =>
+		(IsPixelFormatPacked(format) && ((PackedOrder)GetFormatPixelOrder(format) is PackedOrder.Argb or PackedOrder.Rgba or PackedOrder.Abgr or PackedOrder.Bgra)) ||
+		(IsPixelFormatArray(format) && ((ArrayOrder)GetFormatPixelOrder(format) is ArrayOrder.Argb or ArrayOrder.Rgba or ArrayOrder.Abgr or ArrayOrder.Bgra));
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool IsPixelFormatFourCc(PixelFormat format) => format != 0 && (GetFormatPixelFlag(format) != 1);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Colorspace DefineColorspace(ColorType type, ColorRange range, ColorPrimaries primaries, TransferCharacteristics transfer, MatrixCoefficients matrix, ChromaLocation chroma) =>
@@ -320,152 +472,4 @@ public static partial class SDL
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool IsColorspaceFullRange(Colorspace cspace) => GetColorspaceRange(cspace) == ColorRange.Full;
-
-	public enum Colorspace : uint
-	{
-		Unknown = 0,
-		Srgb = 0x120005a0,
-		SrgbLinear = 0x12000500,
-		HDR10 = 0x12002600,
-		JPEG = 0x220004c6,
-		Bt601Limited = 0x211018c6,
-		Bt601Full = 0x221018c6,
-		Bt709Limited = 0x21100421,
-		Bt709Full = 0x22100421,
-		Bt2020Limited = 0x21102609,
-		Bt2020Full = 0x22102609,
-		RgbDefault = Srgb,
-		YuvDefault = Bt601Limited
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct Color
-	{
-		public byte R;
-		public byte G;
-		public byte B;
-		public byte A;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct FColor
-	{
-		public float R;
-		public float G;
-		public float B;
-		public float A;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public unsafe struct Palette
-	{
-		public int NumColors;
-		public Color* Colors;
-		private readonly uint version_;
-		private readonly int refCount_;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public unsafe struct PixelFormatDetails
-	{
-		public readonly PixelFormat Format;
-		public readonly byte BitsPerPixel;
-		public readonly byte BytesPerPixel;
-		private fixed byte padding_[2];
-		public readonly uint RMask;
-		public readonly uint GMask;
-		public readonly uint BMask;
-		public readonly uint AMask;
-		public readonly byte RBits;
-		public readonly byte GBits;
-		public readonly byte BBits;
-		public readonly byte ABits;
-		public readonly byte RShift;
-		public readonly byte GShift;
-		public readonly byte BShift;
-		public readonly byte AShift;
-	}
-
-	private static partial class Native
-	{
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetPixelFormatName(PixelFormat format);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		[return: MarshalAs(UnmanagedType.I1)]
-		public static partial bool SDL_GetMasksForPixelFormat(PixelFormat format, out int bpp, out uint rMask, out uint gMask, out uint bMask, out uint aMask);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial PixelFormat SDL_GetPixelFormatForMasks(int bpp, uint Rmask, uint Gmask, uint Bmask, uint Amask);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial PixelFormatDetails* SDL_GetPixelFormatDetails(PixelFormat format);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial Palette* SDL_CreatePalette(int ncolors);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		[return: MarshalAs(UnmanagedType.I1)]
-		public static unsafe partial bool SDL_SetPaletteColors(Palette* palette, in Color colors, int firstcolor, int ncolors);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial void SDL_DestroyPalette(Palette* palette);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial uint SDL_MapRGB(PixelFormatDetails* format, in Palette palette, byte r, byte g, byte b);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial uint SDL_MapRGBA(PixelFormatDetails* format, in Palette palette, byte r, byte g, byte b, byte a);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial void SDL_GetRGB(uint pixelvalue, PixelFormatDetails* format, in Palette palette, out byte r, out byte g, out byte b);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static unsafe partial void SDL_GetRGBA(uint pixelvalue, PixelFormatDetails* format, in Palette palette, out byte r, out byte g, out byte b, out byte a);
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetPixelFormatName(PixelFormat format) => Native.SDL_GetPixelFormatName(format);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool GetMasksForPixelFormat(PixelFormat format, out int bpp, out uint rmask, out uint gmask, out uint bmask, out uint amask) => Native.SDL_GetMasksForPixelFormat(format, out bpp, out rmask, out gmask, out bmask, out amask);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static PixelFormat GetPixelFormatForMasks(int bpp, uint rmask, uint gmask, uint bmask, uint amask) => Native.SDL_GetPixelFormatForMasks(bpp, rmask, gmask, bmask, amask);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe PixelFormatDetails* GetPixelFormatDetails(PixelFormat format) => Native.SDL_GetPixelFormatDetails(format);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe Palette* CreatePalette(int ncolors) => Native.SDL_CreatePalette(ncolors);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe bool SetPaletteColors(Palette* palette, in Color colors, int firstcolor, int ncolors) => Native.SDL_SetPaletteColors(palette, in colors, firstcolor, ncolors);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe void DestroyPalette(Palette* palette) => Native.SDL_DestroyPalette(palette);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe uint MapRGB(PixelFormatDetails* format, in Palette palette, byte r, byte g, byte b) => Native.SDL_MapRGB(format, in palette, r, g, b);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe uint MapRGBA(PixelFormatDetails* format, in Palette palette, byte r, byte g, byte b, byte a) => Native.SDL_MapRGBA(format, in palette, r, g, b, a);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe void GetRGB(uint pixelvalue, PixelFormatDetails* format, in Palette palette, out byte r, out byte g, out byte b) => Native.SDL_GetRGB(pixelvalue, format, in palette, out r, out g, out b);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static unsafe void GetRGBA(uint pixelvalue, PixelFormatDetails* format, in Palette palette, out byte r, out byte g, out byte b, out byte a) => Native.SDL_GetRGBA(pixelvalue, format, in palette, out r, out g, out b, out a);
 }
