@@ -943,7 +943,7 @@ public static partial class Sdl
 	public static string GetVideoDriver(int index) => Native.SDL_GetVideoDriver(index);
 	public static string GetCurrentVideoDriver() => Native.SDL_GetCurrentVideoDriver();
 	public static SystemTheme GetSystemTheme() => Native.SDL_GetSystemTheme();
-	public static unsafe OwnedArray<DisplayID> GetDisplays() => new(Native.SDL_GetDisplays(out var count), count);
+	public static unsafe OwnedArrayPtr<DisplayID> GetDisplays() => new(Native.SDL_GetDisplays(out var count), count);
 	public static DisplayID GetPrimaryDisplay() => Native.SDL_GetPrimaryDisplay();
 	public static PropertiesID GetDisplayProperties(DisplayID displayID) => Native.SDL_GetDisplayProperties(displayID);
 	public static string GetDisplayName(DisplayID displayID) => Native.SDL_GetDisplayName(displayID);
@@ -952,7 +952,7 @@ public static partial class Sdl
 	public static DisplayOrientation GetNaturalDisplayOrientation(DisplayID displayID) => Native.SDL_GetNaturalDisplayOrientation(displayID);
 	public static DisplayOrientation GetCurrentDisplayOrientation(DisplayID displayID) => Native.SDL_GetCurrentDisplayOrientation(displayID);
 	public static float DisplayContentScale(DisplayID displayID) => Native.GetDisplayContentScale(displayID);
-	public unsafe static OwnedArray<Ptr<DisplayMode>> GetFullscreenDisplayModes(DisplayID displayID) => new(Native.SDL_GetFullscreenDisplayModes(displayID, out var count), count);
+	public unsafe static OwnedArrayPtr<Ptr<DisplayMode>> GetFullscreenDisplayModes(DisplayID displayID) => new(Native.SDL_GetFullscreenDisplayModes(displayID, out var count), count);
 	public static bool GetClosestFullscreenDisplayMode(DisplayID displayID, int width, int height, float refreshRate, bool includeHighDensityModes, out DisplayMode closest) => Native.SDL_GetClosestFullscreenDisplayMode(displayID, width, height, refreshRate, includeHighDensityModes, out closest);
 	public static Ptr<DisplayMode> GetDesktopDisplayMode(DisplayID displayID) => Native.SDL_GetDesktopDisplayMode(displayID);
 	public static Ptr<DisplayMode> GetCurrentDisplayMode(DisplayID displayID) => Native.SDL_GetCurrentDisplayMode(displayID);
@@ -963,9 +963,9 @@ public static partial class Sdl
 	public static float GetWindowDisplayScale(in Window window) => Native.SDL_GetWindowDisplayScale(window);
 	public static bool SetWindowFullscreenMode(in Window window, in DisplayMode mode) => Native.SDL_SetWindowFullscreenMode(window, mode);
 	public static Ptr<DisplayMode> GetWindowFullscreenMode(in Window window) => Native.SDL_GetWindowFullscreenMode(window);
-	public unsafe static OwnedArray<byte> GetWindowICCProfile(in Window window) => new((byte*)Native.SDL_GetWindowICCProfile(window, out var size), (int)size);
+	public unsafe static OwnedArrayPtr<byte> GetWindowICCProfile(in Window window) => new((byte*)Native.SDL_GetWindowICCProfile(window, out var size), (int)size);
 	public static PixelFormat GetWindowPixelFormat(in Window window) => Native.SDL_GetWindowPixelFormat(window);
-	public unsafe static OwnedArray<Ptr<Window>> GetWindows() => new(Native.SDL_GetWindows(out var count), count);
+	public unsafe static OwnedArrayPtr<Ptr<Window>> GetWindows() => new(Native.SDL_GetWindows(out var count), count);
 	public static Ptr<Window> CreateWindow(string title, int width, int height, WindowFlags flags) => Native.SDL_CreateWindow(title, width, height, flags);
 	public static Ptr<Window> CreatePopupWindow(in Window parent, int offsetX, int offsetY, int width, int height, WindowFlags flags) => Native.SDL_CreatePopupWindow(parent, offsetX, offsetY, width, height, flags);
 	public static Ptr<Window> CreateWindowWithProperties(PropertiesID props) => Native.SDL_CreateWindowWithProperties(props);

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace SDL3CS;
@@ -22,7 +23,6 @@ public static partial class Sdl
 				return false;
 
 			Native.SDL_free(handle);
-			Console.WriteLine("freed!");
 			SetHandle(0);
 			return true;
 		}
@@ -50,26 +50,38 @@ public static partial class Sdl
 		}
 	}
 
-	public unsafe readonly struct OwnedArray<T>(T* ptr, int count) : IDisposable where T : unmanaged
+	public unsafe readonly struct ArrayPtr<T>(T* ptr, int count) where T : unmanaged
 	{
-		private readonly SdlFreeHandle handle_ = new((nint)ptr);
-
 		public readonly bool IsNull
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => ptr == null;
 		}
 
-		public readonly Span<T> Value
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsNull ? throw new NullReferenceException() : new(ptr, count);
-		}
-
-		public void Dispose() => handle_.Dispose();
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public readonly Span<T> AsSpan() => IsNull ? throw new NullReferenceException() : new(ptr, count);
 	}
 
-	public const float FltEpsilon = float.Epsilon;
+	public unsafe readonly struct OwnedArrayPtr<T>(T* ptr, int count) : IDisposable where T : unmanaged
+	{
+		private readonly ArrayPtr<T> array_ = new(ptr, count);
+		private readonly SdlFreeHandle handle_ = new((nint)ptr);
+		public readonly int Count { get; } = count;
+
+		public readonly bool IsNull
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => array_.IsNull;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public readonly T* AsPointer() => ptr;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public readonly Span<T> AsSpan() => array_.AsSpan();
+
+		public readonly void Dispose() => handle_.Dispose();
+	}
 
 	public readonly struct Surface { }
 
@@ -108,5 +120,12 @@ public static partial class Sdl
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
 		public static partial void SDL_free(nint mem);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		public static partial string SDL_GetError();
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string GetError() => Native.SDL_GetError();
 }

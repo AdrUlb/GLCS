@@ -79,6 +79,8 @@ internal static class Program
 	{
 		Sdl.Init(Sdl.InitFlags.Video);
 
+		Sdl.AddEventWatch(EventWatch, 0);
+
 		Sdl.GL_SetAttribute(Sdl.GLAttr.DoubleBuffer, 1);
 		Sdl.GL_SetAttribute(Sdl.GLAttr.ContextMajorVersion, 3);
 		Sdl.GL_SetAttribute(Sdl.GLAttr.ContextMinorVersion, 3);
@@ -87,20 +89,16 @@ internal static class Program
 		Sdl.GL_SetAttribute(Sdl.GLAttr.MultisampleBuffers, 1);
 		Sdl.GL_SetAttribute(Sdl.GLAttr.MultisampleSamples, 8);
 
-		var window = Sdl.CreateWindow("GLCS Test", initialWidth_, initialHeight_, Sdl.WindowFlags.OpenGL | Sdl.WindowFlags.Hidden | Sdl.WindowFlags.Resizable);
+		var windowPtr = Sdl.CreateWindow("GLCS Test", initialWidth_, initialHeight_, Sdl.WindowFlags.OpenGL | Sdl.WindowFlags.Hidden | Sdl.WindowFlags.Resizable);
 
-		/*
-		if (window.IsNull)
+		if (windowPtr.IsNull)
 			throw new($"Failed to create SDL window: {Sdl.GetError()}");
-		*/
 
-		var context = Sdl.GL_CreateContext(window.Value);
-		/*
+		var context = Sdl.GL_CreateContext(windowPtr.Value);
 		if (context.IsNull)
 			throw new($"Failed to create GL context: {Sdl.GetError()}");
-		*/
 
-		Sdl.GL_MakeCurrent(window.Value, context);
+		Sdl.GL_MakeCurrent(windowPtr.Value, context);
 		var gl = new ManagedGL(static proc => Sdl.GL_GetProcAddress(proc));
 
 		Console.WriteLine($"OpenGL Renderer: {gl.GetString(StringName.Renderer)}");
@@ -129,6 +127,7 @@ internal static class Program
 			program.DetachShader(vertexShader);
 			program.DetachShader(fragmentShader);
 		}
+
 		if (program.Get(ProgramPropertyARB.LinkStatus) != GL.TRUE)
 			throw new($"Shader program linking failed: {program.GetInfoLog()}");
 
@@ -138,15 +137,15 @@ internal static class Program
 		var vao = new GLVertexArray(gl);
 		vao.VertexAttribPointers(vbo);
 
-		Sdl.GL_SetSwapInterval(0);
+		Sdl.GL_SetSwapInterval(Sdl.WindowSurfaceVsyncAdaptive);
 
 		gl.Viewport(0, 0, initialWidth_, initialHeight_);
 
-		Sdl.GL_MakeCurrent(window.Value, Sdl.GLContext.Null);
+		Sdl.GL_MakeCurrent(windowPtr.Value, Sdl.GLContext.Null);
 
 		var renderThread = new Thread(() =>
 		{
-			Sdl.GL_MakeCurrent(window.Value, context);
+			Sdl.GL_MakeCurrent(windowPtr.Value, context);
 			var lastWidth = width_;
 			var lastHeight = height_;
 			while (!closeRequested_)
@@ -159,19 +158,17 @@ internal static class Program
 				}
 				gl.Clear(Color.CornflowerBlue, ClearBufferMask.ColorBufferBit);
 				vao.Draw(PrimitiveType.Triangles, 0, 3, program);
-				Sdl.GL_SwapWindow(window.Value);
+				Sdl.GL_SwapWindow(windowPtr.Value);
 			}
-			Sdl.GL_MakeCurrent(window.Value, Sdl.GLContext.Null);
+			Sdl.GL_MakeCurrent(windowPtr.Value, Sdl.GLContext.Null);
 		});
 
 		renderThread.Start();
 
-		Sdl.AddEventWatch(EventWatch, 0);
-
-		Sdl.ShowWindow(window.Value);
+		Sdl.ShowWindow(windowPtr.Value);
 
 		while (!closeRequested_)
-			Sdl.PumpEvents();
+			Sdl.WaitEvent(out _);
 
 		SpinWait.SpinUntil(() => renderThread.Join(100));
 
@@ -180,7 +177,7 @@ internal static class Program
 		program.Dispose();
 
 		Sdl.GL_DestroyContext(context);
-		Sdl.DestroyWindow(window.Value);
+		Sdl.DestroyWindow(windowPtr.Value);
 
 		Sdl.Quit();
 	}

@@ -150,5 +150,5 @@ public static partial class Sdl
 		(float.Abs(a.Height - b.Height) <= epsilon);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool SDL_RectsEqualFloat(in FRect a, in FRect b) => SDL_RectsEqualEpsilon(a, b, FltEpsilon);
+	public static bool SDL_RectsEqualFloat(in FRect a, in FRect b) => SDL_RectsEqualEpsilon(a, b, float.Epsilon);
 }
