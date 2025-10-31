@@ -120,12 +120,5 @@ public static partial class Sdl
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
 		public static partial void SDL_free(nint mem);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetError();
 	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetError() => Native.SDL_GetError();
 }

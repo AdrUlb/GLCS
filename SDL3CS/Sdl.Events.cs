@@ -508,8 +508,18 @@ public static partial class Sdl
 		public readonly ulong Timestamp;
 		public readonly JoystickID Which;
 		public readonly int Sensor;
-		public unsafe fixed float Data[3];
+		private unsafe fixed float data_[3];
 		public readonly ulong SensorTimestamp;
+
+		public unsafe readonly ReadOnlySpan<float> DataSpan
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get
+			{
+				fixed (float* ptr = data_)
+					return new ReadOnlySpan<float>(ptr, 3);
+			}
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -688,16 +698,16 @@ public static partial class Sdl
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public unsafe readonly struct ClipboardEvent
+	public readonly struct ClipboardEvent
 	{
 		public readonly EventType Type;
 		private readonly uint reserved_;
 		public readonly ulong Timestamp;
 		private readonly byte owner_;
 		private readonly int numMimeTypes_;
-		private readonly Ptr<byte>* mimeTypes_;
+		private unsafe readonly Ptr<byte>* mimeTypes_;
 
-		public readonly ReadOnlySpan<Ptr<byte>> MimeTypes
+		public unsafe readonly ReadOnlySpan<Ptr<byte>> MimeTypes
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => new(mimeTypes_, numMimeTypes_);
@@ -881,31 +891,74 @@ public static partial class Sdl
 		public unsafe static partial int SDL_GetEventDescription(in Event @event, byte* buf, int buflen);
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void PumpEvents() => Native.SDL_PumpEvents();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static int PeepEvents(Span<Event> events, EventAction action, uint minType, uint maxType)
 	{
 		fixed (Event* eventsPtr = events)
 			return Native.SDL_PeepEvents(eventsPtr, events.Length, action, minType, maxType);
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool HasEvent(uint type) => Native.SDL_HasEvent(type);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool HasEvent(EventType type) => Native.SDL_HasEvent((uint)type);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool HasEvents(uint minType, uint maxType) => Native.SDL_HasEvents(minType, maxType);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void FlushEvent(uint type) => Native.SDL_FlushEvent(type);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void FlushEvent(EventType type) => Native.SDL_FlushEvent((uint)type);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void FlushEvents(uint minType, uint maxType) => Native.SDL_FlushEvents(minType, maxType);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool PollEvent(out Event @event) => Native.SDL_PollEvent(out @event);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool WaitEvent(out Event @event) => Native.SDL_WaitEvent(out @event);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool WaitEventTimeout(out Event @event, int timeoutMs) => Native.SDL_WaitEventTimeout(out @event, timeoutMs);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool PushEvent(in Event @event) => Native.SDL_PushEvent(@event);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void SetEventFilter(EventFilter filter, nint userdata) => Native.SDL_SetEventFilter(filter, userdata);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetEventFilter(out EventFilter filter, out nint userdata) => Native.SDL_GetEventFilter(out filter, out userdata);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool AddEventWatch(EventFilter filter, nint userdata) => Native.SDL_AddEventWatch(filter, userdata);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void RemoveEventWatch(EventFilter filter, nint userdata) => Native.SDL_RemoveEventWatch(filter, userdata);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void FilterEvents(EventFilter filter, nint userdata) => Native.SDL_FilterEvents(filter, userdata);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void SetEventEnabled(uint type, bool enabled) => Native.SDL_SetEventEnabled(type, enabled);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool EventEnabled(uint type) => Native.SDL_EventEnabled(type);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static uint RegisterEvents(int numevents) => Native.SDL_RegisterEvents(numevents);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> GetWindowFromEvent(in Event @event) => Native.SDL_GetWindowFromEvent(@event);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static int GetEventDescription(in Event @event, out string description)
 	{
 		Span<byte> buffer = stackalloc byte[256];

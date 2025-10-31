@@ -102,14 +102,34 @@ public static partial class Sdl
 		public static partial string SDL_GetAppMetadataProperty(string name);
 	}
 
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool Init(InitFlags flags) => Native.SDL_Init(flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool InitSubSystem(InitFlags flags) => Native.SDL_InitSubSystem(flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void QuitSubSystem(InitFlags flags) => Native.SDL_QuitSubSystem(flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static InitFlags WasInit(InitFlags flags) => Native.SDL_WasInit(flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void Quit() => Native.SDL_Quit();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool IsMainThread() => Native.SDL_IsMainThread();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool RunOnMainThread(MainThreadCallback callback, nint userdata, [MarshalAs(UnmanagedType.I1)] bool waitComplete) => Native.SDL_RunOnMainThread(callback, userdata, waitComplete);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetAppMetadata(string appName, string appVersion, string appIdentifier) => Native.SDL_SetAppMetadata(appName, appVersion, appIdentifier);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetAppMetadataProperty(string name, string value) => Native.SDL_SetAppMetadataProperty(name, value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string GetAppMetadataProperty(string name) => Native.SDL_GetAppMetadataProperty(name);
 }

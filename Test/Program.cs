@@ -62,6 +62,10 @@ internal static class Program
 	{
 		try
 		{
+#if !AOT_PUBLISH
+			NativeLibrary.SetDllImportResolver(typeof(Sdl).Assembly, ImportResolver);
+#endif
+
 			Run();
 		}
 		catch (Exception ex)
@@ -75,12 +79,8 @@ internal static class Program
 
 	private static volatile bool closeRequested_ = false;
 
-	private unsafe static void Run()
+	private static void Run()
 	{
-#if !AOT_PUBLISH
-		NativeLibrary.SetDllImportResolver(typeof(Sdl).Assembly, ImportResolver);
-#endif
-
 		Sdl.Init(Sdl.InitFlags.Video);
 
 		Sdl.GL_SetAttribute(Sdl.GLAttr.DoubleBuffer, 1);

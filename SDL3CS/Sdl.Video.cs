@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static SDL3CS.Sdl;
 
 namespace SDL3CS;
 
@@ -185,12 +184,12 @@ public static partial class Sdl
 	}
 
 	public readonly struct EGLDisplay
-    {
-        public static readonly EGLDisplay Null = new(0);
+	{
+		public static readonly EGLDisplay Null = new(0);
 		private readonly nint value_;
 		private EGLDisplay(nint value) => value_ = value;
 
-        public readonly bool IsNull
+		public readonly bool IsNull
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => value_ == 0;
@@ -939,123 +938,568 @@ public static partial class Sdl
 		public static partial bool SDL_GL_DestroyContext(GLContext context);
 	}
 
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int GetNumVideoDrivers() => Native.SDL_GetNumVideoDrivers();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string GetVideoDriver(int index) => Native.SDL_GetVideoDriver(index);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string GetCurrentVideoDriver() => Native.SDL_GetCurrentVideoDriver();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static SystemTheme GetSystemTheme() => Native.SDL_GetSystemTheme();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static unsafe OwnedArrayPtr<DisplayID> GetDisplays() => new(Native.SDL_GetDisplays(out var count), count);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static DisplayID GetPrimaryDisplay() => Native.SDL_GetPrimaryDisplay();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static PropertiesID GetDisplayProperties(DisplayID displayID) => Native.SDL_GetDisplayProperties(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string GetDisplayName(DisplayID displayID) => Native.SDL_GetDisplayName(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetDisplayBounds(DisplayID displayID, out Rect rect) => Native.SDL_GetDisplayBounds(displayID, out rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetDisplayUsableBounds(DisplayID displayID, out Rect rect) => Native.SDL_GetDisplayUsableBounds(displayID, out rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static DisplayOrientation GetNaturalDisplayOrientation(DisplayID displayID) => Native.SDL_GetNaturalDisplayOrientation(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static DisplayOrientation GetCurrentDisplayOrientation(DisplayID displayID) => Native.SDL_GetCurrentDisplayOrientation(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static float DisplayContentScale(DisplayID displayID) => Native.GetDisplayContentScale(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static OwnedArrayPtr<Ptr<DisplayMode>> GetFullscreenDisplayModes(DisplayID displayID) => new(Native.SDL_GetFullscreenDisplayModes(displayID, out var count), count);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetClosestFullscreenDisplayMode(DisplayID displayID, int width, int height, float refreshRate, bool includeHighDensityModes, out DisplayMode closest) => Native.SDL_GetClosestFullscreenDisplayMode(displayID, width, height, refreshRate, includeHighDensityModes, out closest);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<DisplayMode> GetDesktopDisplayMode(DisplayID displayID) => Native.SDL_GetDesktopDisplayMode(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<DisplayMode> GetCurrentDisplayMode(DisplayID displayID) => Native.SDL_GetCurrentDisplayMode(displayID);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static DisplayID GetDisplayForPoint(in Point point) => Native.SDL_GetDisplayForPoint(point);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static DisplayID GetDisplayForRect(in Rect rect) => Native.SDL_GetDisplayForRect(rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static DisplayID GetDisplayForWindow(in Window window) => Native.SDL_GetDisplayForWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static DisplayID GetDisplayForWindow(Ptr<Window> window) => Native.SDL_GetDisplayForWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static float GetWindowPixelDensity(in Window window) => Native.SDL_GetWindowPixelDensity(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float GetWindowPixelDensity(Ptr<Window> window) => Native.SDL_GetWindowPixelDensity(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static float GetWindowDisplayScale(in Window window) => Native.SDL_GetWindowDisplayScale(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float GetWindowDisplayScale(Ptr<Window> window) => Native.SDL_GetWindowDisplayScale(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowFullscreenMode(in Window window, in DisplayMode mode) => Native.SDL_SetWindowFullscreenMode(window, mode);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowFullscreenMode(Ptr<Window> window, in DisplayMode mode) => Native.SDL_SetWindowFullscreenMode(window.Value, mode);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<DisplayMode> GetWindowFullscreenMode(in Window window) => Native.SDL_GetWindowFullscreenMode(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<DisplayMode> GetWindowFullscreenMode(Ptr<Window> window) => Native.SDL_GetWindowFullscreenMode(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static OwnedArrayPtr<byte> GetWindowICCProfile(in Window window) => new((byte*)Native.SDL_GetWindowICCProfile(window, out var size), (int)size);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public unsafe static OwnedArrayPtr<byte> GetWindowICCProfile(Ptr<Window> window) => new((byte*)Native.SDL_GetWindowICCProfile(window.Value, out var size), (int)size);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static PixelFormat GetWindowPixelFormat(in Window window) => Native.SDL_GetWindowPixelFormat(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PixelFormat GetWindowPixelFormat(Ptr<Window> window) => Native.SDL_GetWindowPixelFormat(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static OwnedArrayPtr<Ptr<Window>> GetWindows() => new(Native.SDL_GetWindows(out var count), count);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> CreateWindow(string title, int width, int height, WindowFlags flags) => Native.SDL_CreateWindow(title, width, height, flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> CreatePopupWindow(in Window parent, int offsetX, int offsetY, int width, int height, WindowFlags flags) => Native.SDL_CreatePopupWindow(parent, offsetX, offsetY, width, height, flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<Window> CreatePopupWindow(Ptr<Window> parent, int offsetX, int offsetY, int width, int height, WindowFlags flags) => Native.SDL_CreatePopupWindow(parent.Value, offsetX, offsetY, width, height, flags);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> CreateWindowWithProperties(PropertiesID props) => Native.SDL_CreateWindowWithProperties(props);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static WindowID GetWindowID(in Window window) => Native.SDL_GetWindowID(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static WindowID GetWindowID(Ptr<Window> window) => Native.SDL_GetWindowID(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> GetWindowFromID(WindowID id) => Native.SDL_GetWindowFromID(id);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> GetWindowParent(in Window window) => Native.SDL_GetWindowParent(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<Window> GetWindowParent(Ptr<Window> window) => Native.SDL_GetWindowParent(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static PropertiesID GetWindowProperties(in Window window) => Native.SDL_GetWindowProperties(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PropertiesID GetWindowProperties(Ptr<Window> window) => Native.SDL_GetWindowProperties(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static WindowFlags GetWindowFlags(in Window window) => Native.SDL_GetWindowFlags(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static WindowFlags GetWindowFlags(Ptr<Window> window) => Native.SDL_GetWindowFlags(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowTitle(in Window window, string title) => Native.SDL_SetWindowTitle(window, title);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowTitle(Ptr<Window> window, string title) => Native.SDL_SetWindowTitle(window.Value, title);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string GetWindowTitle(in Window window) => Native.SDL_GetWindowTitle(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string GetWindowTitle(Ptr<Window> window) => Native.SDL_GetWindowTitle(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowIcon(in Window window, in Surface icon) => Native.SDL_SetWindowIcon(window, icon);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowIcon(Ptr<Window> window, in Surface icon) => Native.SDL_SetWindowIcon(window.Value, icon);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowPosition(in Window window, int x, int y) => Native.SDL_SetWindowPosition(window, x, y);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowPosition(Ptr<Window> window, int x, int y) => Native.SDL_SetWindowPosition(window.Value, x, y);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowPosition(in Window window, out int x, out int y) => Native.SDL_GetWindowPosition(window, out x, out y);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowPosition(Ptr<Window> window, out int x, out int y) => Native.SDL_GetWindowPosition(window.Value, out x, out y);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowSize(in Window window, int width, int height) => Native.SDL_SetWindowSize(window, width, height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowSize(Ptr<Window> window, int width, int height) => Native.SDL_SetWindowSize(window.Value, width, height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowSize(in Window window, out int width, out int height) => Native.SDL_GetWindowSize(window, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowSize(Ptr<Window> window, out int width, out int height) => Native.SDL_GetWindowSize(window.Value, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowSafeArea(in Window window, out Rect rect) => Native.SDL_GetWindowSafeArea(window, out rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowSafeArea(Ptr<Window> window, out Rect rect) => Native.SDL_GetWindowSafeArea(window.Value, out rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowAspectRatio(in Window window, float minAspect, float maxAspect) => Native.SDL_SetWindowAspectRatio(window, minAspect, maxAspect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowAspectRatio(Ptr<Window> window, float minAspect, float maxAspect) => Native.SDL_SetWindowAspectRatio(window.Value, minAspect, maxAspect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowAspectRatio(in Window window, out float minAspect, out float maxAspect) => Native.SDL_GetWindowAspectRatio(window, out minAspect, out maxAspect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowAspectRatio(Ptr<Window> window, out float minAspect, out float maxAspect) => Native.SDL_GetWindowAspectRatio(window.Value, out minAspect, out maxAspect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowBordersSize(in Window window, out int top, out int left, out int bottom, out int right) => Native.SDL_GetWindowBordersSize(window, out top, out left, out bottom, out right);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowBordersSize(Ptr<Window> window, out int top, out int left, out int bottom, out int right) => Native.SDL_GetWindowBordersSize(window.Value, out top, out left, out bottom, out right);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowSizeInPixels(in Window window, out int width, out int height) => Native.SDL_GetWindowSizeInPixels(window, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowSizeInPixels(Ptr<Window> window, out int width, out int height) => Native.SDL_GetWindowSizeInPixels(window.Value, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowMinimumSize(in Window window, int minWidth, int minHeight) => Native.SDL_SetWindowMinimumSize(window, minWidth, minHeight);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowMinimumSize(Ptr<Window> window, int minWidth, int minHeight) => Native.SDL_SetWindowMinimumSize(window.Value, minWidth, minHeight);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowMinimumSize(in Window window, out int width, out int height) => Native.SDL_GetWindowMinimumSize(window, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowMinimumSize(Ptr<Window> window, out int width, out int height) => Native.SDL_GetWindowMinimumSize(window.Value, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowMaximumSize(in Window window, int maxWidth, int maxHeight) => Native.SDL_SetWindowMaximumSize(window, maxWidth, maxHeight);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowMaximumSize(Ptr<Window> window, int maxWidth, int maxHeight) => Native.SDL_SetWindowMaximumSize(window.Value, maxWidth, maxHeight);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowMaximumSize(in Window window, out int width, out int height) => Native.SDL_GetWindowMaximumSize(window, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowMaximumSize(Ptr<Window> window, out int width, out int height) => Native.SDL_GetWindowMaximumSize(window.Value, out width, out height);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowBordered(in Window window, bool bordered) => Native.SDL_SetWindowBordered(window, bordered);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowBordered(Ptr<Window> window, bool bordered) => Native.SDL_SetWindowBordered(window.Value, bordered);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowResizable(in Window window, bool resizable) => Native.SDL_SetWindowResizable(window, resizable);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowResizable(Ptr<Window> window, bool resizable) => Native.SDL_SetWindowResizable(window.Value, resizable);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowAlwaysOnTop(in Window window, bool onTop) => Native.SDL_SetWindowAlwaysOnTop(window, onTop);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowAlwaysOnTop(Ptr<Window> window, bool onTop) => Native.SDL_SetWindowAlwaysOnTop(window.Value, onTop);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool ShowWindow(in Window window) => Native.SDL_ShowWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool ShowWindow(Ptr<Window> window) => Native.SDL_ShowWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool HideWindow(in Window window) => Native.SDL_HideWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool HideWindow(Ptr<Window> window) => Native.SDL_HideWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool RaiseWindow(in Window window) => Native.SDL_RaiseWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool RaiseWindow(Ptr<Window> window) => Native.SDL_RaiseWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool MaximizeWindow(in Window window) => Native.SDL_MaximizeWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool MaximizeWindow(Ptr<Window> window) => Native.SDL_MaximizeWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool MinimizeWindow(in Window window) => Native.SDL_MinimizeWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool MinimizeWindow(Ptr<Window> window) => Native.SDL_MinimizeWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool RestoreWindow(in Window window) => Native.SDL_RestoreWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool RestoreWindow(Ptr<Window> window) => Native.SDL_RestoreWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowFullscreen(in Window window, bool fullscreen) => Native.SDL_SetWindowFullscreen(window, fullscreen);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowFullscreen(Ptr<Window> window, bool fullscreen) => Native.SDL_SetWindowFullscreen(window.Value, fullscreen);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SyncWindow(in Window window) => Native.SDL_SyncWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SyncWindow(Ptr<Window> window) => Native.SDL_SyncWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool WindowHasSurface(in Window window) => Native.SDL_WindowHasSurface(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool WindowHasSurface(Ptr<Window> window) => Native.SDL_WindowHasSurface(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Surface> GetWindowSurface(in Window window) => Native.SDL_GetWindowSurface(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<Surface> GetWindowSurface(Ptr<Window> window) => Native.SDL_GetWindowSurface(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowSurfaceVSync(in Window window, int vsync) => Native.SDL_SetWindowSurfaceVSync(window, vsync);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowSurfaceVSync(Ptr<Window> window, int vsync) => Native.SDL_SetWindowSurfaceVSync(window.Value, vsync);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowSurfaceVSync(in Window window, out int vsync) => Native.SDL_GetWindowSurfaceVSync(window, out vsync);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowSurfaceVSync(Ptr<Window> window, out int vsync) => Native.SDL_GetWindowSurfaceVSync(window.Value, out vsync);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool UpdateWindowSurface(in Window window) => Native.SDL_UpdateWindowSurface(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool UpdateWindowSurface(Ptr<Window> window) => Native.SDL_UpdateWindowSurface(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static bool UpdateWindowSurfaceRects(in Window window, ReadOnlySpan<Rect> rects)
 	{
 		fixed (Rect* rectsPtr = rects)
+
 			return Native.SDL_UpdateWindowSurfaceRects(window, rectsPtr, rects.Length);
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public unsafe static bool UpdateWindowSurfaceRects(Ptr<Window> window, ReadOnlySpan<Rect> rects)
+	{
+		fixed (Rect* rectsPtr = rects)
+			return Native.SDL_UpdateWindowSurfaceRects(window.Value, rectsPtr, rects.Length);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool DestroyWindowSurface(in Window window) => Native.SDL_DestroyWindowSurface(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool DestroyWindowSurface(Ptr<Window> window) => Native.SDL_DestroyWindowSurface(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowKeyboardGrab(in Window window, bool grabbed) => Native.SDL_SetWindowKeyboardGrab(window, grabbed);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowKeyboardGrab(Ptr<Window> window, bool grabbed) => Native.SDL_SetWindowKeyboardGrab(window.Value, grabbed);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowMouseGrab(in Window window, bool grabbed) => Native.SDL_SetWindowMouseGrab(window, grabbed);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowMouseGrab(Ptr<Window> window, bool grabbed) => Native.SDL_SetWindowMouseGrab(window.Value, grabbed);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowKeyboardGrab(in Window window) => Native.SDL_GetWindowKeyboardGrab(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowKeyboardGrab(Ptr<Window> window) => Native.SDL_GetWindowKeyboardGrab(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetWindowMouseGrab(in Window window) => Native.SDL_GetWindowMouseGrab(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GetWindowMouseGrab(Ptr<Window> window) => Native.SDL_GetWindowMouseGrab(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> GetGrabbedWindow() => Native.SDL_GetGrabbedWindow();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowMouseRect(in Window window, in Rect rect) => Native.SDL_SetWindowMouseRect(window, rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowMouseRect(Ptr<Window> window, in Rect rect) => Native.SDL_SetWindowMouseRect(window.Value, rect);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Rect> GetWindowMouseRect(in Window window) => Native.SDL_GetWindowMouseRect(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static Ptr<Rect> GetWindowMouseRect(Ptr<Window> window) => Native.SDL_GetWindowMouseRect(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowOpacity(in Window window, float opacity) => Native.SDL_SetWindowOpacity(window, opacity);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowOpacity(Ptr<Window> window, float opacity) => Native.SDL_SetWindowOpacity(window.Value, opacity);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static float GetWindowOpacity(in Window window) => Native.SDL_GetWindowOpacity(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float GetWindowOpacity(Ptr<Window> window) => Native.SDL_GetWindowOpacity(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowParent(in Window window, in Window parent) => Native.SDL_SetWindowParent(window, parent);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowParent(Ptr<Window> window, Ptr<Window> parent) => Native.SDL_SetWindowParent(window.Value, parent.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowModal(in Window window, bool modal) => Native.SDL_SetWindowModal(window, modal);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowModal(Ptr<Window> window, bool modal) => Native.SDL_SetWindowModal(window.Value, modal);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowFocusable(in Window window, bool focusable) => Native.SDL_SetWindowFocusable(window, focusable);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowFocusable(Ptr<Window> window, bool focusable) => Native.SDL_SetWindowFocusable(window.Value, focusable);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool ShowWindowSystemMenu(in Window window, int x, int y) => Native.SDL_ShowWindowSystemMenu(window, x, y);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool ShowWindowSystemMenu(Ptr<Window> window, int x, int y) => Native.SDL_ShowWindowSystemMenu(window.Value, x, y);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowHitTest(in Window window, HitTest callback, nint callbackData) => Native.SDL_SetWindowHitTest(window, callback, callbackData);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowHitTest(Ptr<Window> window, HitTest callback, nint callbackData) => Native.SDL_SetWindowHitTest(window.Value, callback, callbackData);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowShape(in Window window, in Surface shape) => Native.SDL_SetWindowShape(window, shape);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowShape(Ptr<Window> window, in Surface shape) => Native.SDL_SetWindowShape(window.Value, shape);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool FlashWindow(in Window window, FlashOperation operation) => Native.SDL_FlashWindow(window, operation);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool FlashWindow(Ptr<Window> window, FlashOperation operation) => Native.SDL_FlashWindow(window.Value, operation);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowProgressState(in Window window, ProgressState state) => Native.SDL_SetWindowProgressState(window, state);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowProgressState(Ptr<Window> window, ProgressState state) => Native.SDL_SetWindowProgressState(window.Value, state);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static ProgressState GetWindowProgressState(in Window window) => Native.SDL_GetWindowProgressState(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static ProgressState GetWindowProgressState(Ptr<Window> window) => Native.SDL_GetWindowProgressState(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowProgressValue(in Window window, float value) => Native.SDL_SetWindowProgressValue(window, value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetWindowProgressValue(Ptr<Window> window, float value) => Native.SDL_SetWindowProgressValue(window.Value, value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static float GetWindowProgressValue(in Window window) => Native.SDL_GetWindowProgressValue(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float GetWindowProgressValue(Ptr<Window> window) => Native.SDL_GetWindowProgressValue(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void DestroyWindow(in Window window) => Native.SDL_DestroyWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void DestroyWindow(Ptr<Window> window) => Native.SDL_DestroyWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool ScreenSaverEnabled() => Native.SDL_ScreenSaverEnabled();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool EnableScreenSaver() => Native.SDL_EnableScreenSaver();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool DisableScreenSaver() => Native.SDL_DisableScreenSaver();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_LoadLibrary(string path) => Native.SDL_GL_LoadLibrary(path);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static nint GL_GetProcAddress(string proc) => Native.SDL_GL_GetProcAddress(proc);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static nint EGL_GetProcAddress(string proc) => Native.SDL_EGL_GetProcAddress(proc);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void GL_UnloadLibrary() => Native.SDL_GL_UnloadLibrary();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_ExtensionSupported(string extension) => Native.SDL_GL_ExtensionSupported(extension);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void GL_ResetAttributes() => Native.SDL_GL_ResetAttributes();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_SetAttribute(GLAttr attr, int value) => Native.SDL_GL_SetAttribute(attr, value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_SetAttribute(GLAttr attr, GLContextFlags value) => Native.SDL_GL_SetAttribute(attr, (int)value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_SetAttribute(GLAttr attr, GLProfile value) => Native.SDL_GL_SetAttribute(attr, (int)value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_GetAttribute(GLAttr attr, out int value) => Native.SDL_GL_GetAttribute(attr, out value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static GLContext GL_CreateContext(in Window window) => Native.SDL_GL_CreateContext(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static GLContext GL_CreateContext(Ptr<Window> window) => Native.SDL_GL_CreateContext(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_MakeCurrent(in Window window, GLContext context) => Native.SDL_GL_MakeCurrent(window, context);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GL_MakeCurrent(Ptr<Window> window, GLContext context) => Native.SDL_GL_MakeCurrent(window.Value, context);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> GL_GetCurrentWindow() => Native.SDL_GL_GetCurrentWindow();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static GLContext GL_GetCurrentContext() => Native.SDL_GL_GetCurrentContext();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static EGLDisplay EGL_GetCurrentDisplay() => Native.SDL_EGL_GetCurrentDisplay();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static EGLConfig EGL_GetCurrentConfig() => Native.SDL_EGL_GetCurrentConfig();
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static EGLSurface EGL_GetWindowSurface(in Window window) => Native.SDL_EGL_GetWindowSurface(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static EGLSurface EGL_GetWindowSurface(Ptr<Window> window) => Native.SDL_EGL_GetWindowSurface(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void EGL_SetAttributeCallbacks(EGLAttribArrayCallback platformAttribCallback, EGLIntArrayCallback surfaceAttribCallback, EGLIntArrayCallback contextAttribCallback, nint userdata) => Native.SDL_EGL_SetAttributeCallbacks(platformAttribCallback, surfaceAttribCallback, contextAttribCallback, userdata);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_SetSwapInterval(int interval) => Native.SDL_GL_SetSwapInterval(interval);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_GetSwapInterval(out int interval) => Native.SDL_GL_GetSwapInterval(out interval);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_SwapWindow(in Window window) => Native.SDL_GL_SwapWindow(window);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool GL_SwapWindow(Ptr<Window> window) => Native.SDL_GL_SwapWindow(window.Value);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GL_DestroyContext(GLContext context) => Native.SDL_GL_DestroyContext(context);
 }
