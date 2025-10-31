@@ -87,7 +87,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetEnvironmentVariable(in Environment env, string name);
+		public static partial nint SDL_GetEnvironmentVariable(in Environment env, string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -109,11 +109,11 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_getenv(string name);
+		public static partial nint SDL_getenv(string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_getenv_unsafe(string name);
+		public static partial nint SDL_getenv_unsafe(string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -178,7 +178,7 @@ public static partial class Sdl
 	public static Ptr<Environment> CreateEnvironment(bool populated) => Native.SDL_CreateEnvironment(populated);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetEnvironmentVariable(in Environment env, string name) => Native.SDL_GetEnvironmentVariable(env, name);
+	public static string? GetEnvironmentVariable(in Environment env, string name) => Marshal.PtrToStringUTF8(Native.SDL_GetEnvironmentVariable(env, name));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public unsafe static OwnedArrayPtr<Ptr<byte>> GetEnvironmentVariables(in Environment env)
@@ -203,10 +203,10 @@ public static partial class Sdl
 	public static void DestroyEnvironment(in Environment env) => Native.SDL_DestroyEnvironment(env);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string getenv(string name) => Native.SDL_getenv(name);
+	public static string? getenv(string name) => Marshal.PtrToStringUTF8(Native.SDL_getenv(name));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string getenv_unsafe(string name) => Native.SDL_getenv_unsafe(name);
+	public static string? getenv_unsafe(string name) => Marshal.PtrToStringUTF8(Native.SDL_getenv_unsafe(name));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int setenv_unsafe(string name, string value, int overwrite) => Native.SDL_setenv_unsafe(name, value, overwrite);

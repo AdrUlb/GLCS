@@ -428,11 +428,11 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetVideoDriver(int index);
+		public static partial nint SDL_GetVideoDriver(int index);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetCurrentVideoDriver();
+		public static partial nint SDL_GetCurrentVideoDriver();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -452,7 +452,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetDisplayName(DisplayID displayID);
+		public static partial nint SDL_GetDisplayName(DisplayID displayID);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -573,7 +573,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetWindowTitle(in Window window);
+		public static partial nint SDL_GetWindowTitle(in Window window);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -943,10 +943,10 @@ public static partial class Sdl
 	public static int GetNumVideoDrivers() => Native.SDL_GetNumVideoDrivers();
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetVideoDriver(int index) => Native.SDL_GetVideoDriver(index);
+	public static string? GetVideoDriver(int index) => Marshal.PtrToStringUTF8(Native.SDL_GetVideoDriver(index));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetCurrentVideoDriver() => Native.SDL_GetCurrentVideoDriver();
+	public static string? GetCurrentVideoDriver() => Marshal.PtrToStringUTF8(Native.SDL_GetCurrentVideoDriver());
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static SystemTheme GetSystemTheme() => Native.SDL_GetSystemTheme();
@@ -961,7 +961,7 @@ public static partial class Sdl
 	public static PropertiesID GetDisplayProperties(DisplayID displayID) => Native.SDL_GetDisplayProperties(displayID);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetDisplayName(DisplayID displayID) => Native.SDL_GetDisplayName(displayID);
+	public static string? GetDisplayName(DisplayID displayID) => Marshal.PtrToStringUTF8(Native.SDL_GetDisplayName(displayID));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetDisplayBounds(DisplayID displayID, out Rect rect) => Native.SDL_GetDisplayBounds(displayID, out rect);
@@ -1087,10 +1087,10 @@ public static partial class Sdl
 	public static bool SetWindowTitle(Ptr<Window> window, string title) => Native.SDL_SetWindowTitle(window.Value, title);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetWindowTitle(in Window window) => Native.SDL_GetWindowTitle(window);
+	public static string? GetWindowTitle(in Window window) => Marshal.PtrToStringUTF8(Native.SDL_GetWindowTitle(window));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetWindowTitle(Ptr<Window> window) => Native.SDL_GetWindowTitle(window.Value);
+	public static string? GetWindowTitle(Ptr<Window> window) => Marshal.PtrToStringUTF8(Native.SDL_GetWindowTitle(window.Value));
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool SetWindowIcon(in Window window, in Surface icon) => Native.SDL_SetWindowIcon(window, icon);

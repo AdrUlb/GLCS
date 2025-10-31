@@ -19,7 +19,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetError();
+		public static partial nint SDL_GetError();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -35,7 +35,7 @@ public static partial class Sdl
 	public static bool OutOfMemory() => Native.SDL_OutOfMemory();
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetError() => Native.SDL_GetError();
+	public static string GetError() => Marshal.PtrToStringUTF8(Native.SDL_GetError())!;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool ClearError() => Native.SDL_ClearError();

@@ -101,7 +101,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetStringProperty(PropertiesID props, string name, string defaultValue);
+		public static partial nint SDL_GetStringProperty(PropertiesID props, string name, string defaultValue);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -174,7 +174,7 @@ public static partial class Sdl
 	public static nint GetPointerProperty(PropertiesID props, string name, nint defaultValue) => Native.SDL_GetPointerProperty(props, name, defaultValue);
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetStringProperty(PropertiesID props, string name, string defaultValue) => Native.SDL_GetStringProperty(props, name, defaultValue);
+	public static string GetStringProperty(PropertiesID props, string name, string defaultValue) => Marshal.PtrToStringUTF8(Native.SDL_GetStringProperty(props, name, defaultValue))!;
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static long GetNumberProperty(PropertiesID props, string name, long defaultValue) => Native.SDL_GetNumberProperty(props, name, defaultValue);

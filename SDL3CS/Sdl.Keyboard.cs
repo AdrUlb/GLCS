@@ -58,7 +58,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetKeyboardNameForID(KeyboardID instanceId);
+		public static partial nint SDL_GetKeyboardNameForID(KeyboardID instanceId);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -95,7 +95,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetScancodeName(Scancode scancode);
+		public static partial nint SDL_GetScancodeName(Scancode scancode);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -103,7 +103,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetKeyName(Keycode key);
+		public static partial nint SDL_GetKeyName(Keycode key);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -163,7 +163,7 @@ public static partial class Sdl
 	public unsafe static OwnedArrayPtr<KeyboardID> GetKeyboards() => new(Native.SDL_GetKeyboards(out var count), count);
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetKeyboardNameForID(KeyboardID instanceId) => Native.SDL_GetKeyboardNameForID(instanceId);
+	public static string? GetKeyboardNameForID(KeyboardID instanceId) => Marshal.PtrToStringUTF8(Native.SDL_GetKeyboardNameForID(instanceId));
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Ptr<Window> GetKeyboardFocus() => Native.SDL_GetKeyboardFocus();
@@ -190,13 +190,13 @@ public static partial class Sdl
 	public static bool SetScancodeName(Scancode scancode, string name) => Native.SDL_SetScancodeName(scancode, name);
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetScancodeName(Scancode scancode) => Native.SDL_GetScancodeName(scancode);
+	public static string? GetScancodeName(Scancode scancode) => Marshal.PtrToStringUTF8(Native.SDL_GetScancodeName(scancode));
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Scancode GetScancodeFromName(string name) => Native.SDL_GetScancodeFromName(name);
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetKeyName(Keycode key) => Native.SDL_GetKeyName(key);
+	public static string? GetKeyName(Keycode key) => Marshal.PtrToStringUTF8(Native.SDL_GetKeyName(key));
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Keycode GetKeyFromName(string name) => Native.SDL_GetKeyFromName(name);

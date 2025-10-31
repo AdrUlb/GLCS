@@ -303,7 +303,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetPixelFormatName(PixelFormat format);
+		public static partial nint SDL_GetPixelFormatName(PixelFormat format);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
@@ -349,7 +349,7 @@ public static partial class Sdl
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetPixelFormatName(PixelFormat format) => Native.SDL_GetPixelFormatName(format);
+	public static string GetPixelFormatName(PixelFormat format) => Marshal.PtrToStringUTF8(Native.SDL_GetPixelFormatName(format))!;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool GetMasksForPixelFormat(PixelFormat format, out int bpp, out uint rmask, out uint gmask, out uint bmask, out uint amask) => Native.SDL_GetMasksForPixelFormat(format, out bpp, out rmask, out gmask, out bmask, out amask);

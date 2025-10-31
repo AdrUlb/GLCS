@@ -2,7 +2,7 @@
 
 public static partial class Sdl
 {
-	public enum Keycode : uint
+	public enum Keycode
 	{
 		Unknown = 0x00000000,
 		Return = 0x0000000d,
@@ -262,6 +262,7 @@ public static partial class Sdl
 		RightHyper = 0x20000007,
 	}
 
+	[Flags]
 	public enum Keymod : ushort
 	{
 		None = 0x0000,

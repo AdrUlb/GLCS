@@ -99,7 +99,7 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial string SDL_GetAppMetadataProperty(string name);
+		public static partial nint SDL_GetAppMetadataProperty(string name);
 	}
 
 
@@ -131,5 +131,5 @@ public static partial class Sdl
 	public static bool SetAppMetadataProperty(string name, string value) => Native.SDL_SetAppMetadataProperty(name, value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetAppMetadataProperty(string name) => Native.SDL_GetAppMetadataProperty(name);
+	public static string? GetAppMetadataProperty(string name) => Marshal.PtrToStringUTF8(Native.SDL_GetAppMetadataProperty(name));
 }

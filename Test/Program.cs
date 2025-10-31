@@ -154,6 +154,13 @@ internal static class Program
 					case Sdl.EventType.WindowPixelSizeChanged:
 						gl.Viewport(0, 0, ev.Window.Data1, ev.Window.Data2);
 						break;
+					case Sdl.EventType.KeyDown:
+					case Sdl.EventType.KeyUp:
+						{
+							if (ev.Key.Key == Sdl.Keycode.Escape)
+								closeRequested_ = true;
+                            break;
+						}
 					case Sdl.EventType.WindowCloseRequested:
 						closeRequested_ = true;
 						break;
