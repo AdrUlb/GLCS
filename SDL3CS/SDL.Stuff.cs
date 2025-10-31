@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace SDL3CS;
@@ -101,15 +100,12 @@ public static partial class Sdl
 	public enum FingerID : ulong { }
 	public enum PenInputFlags : uint { }
 	public enum KeyboardID : uint { }
-	public enum Keycode : uint { }
 	public enum MouseID : uint { }
 	public enum MouseButtonFlags : uint { }
 	public enum JoystickID : uint { }
 	public enum AudioDeviceID : uint { }
 	public enum CameraID : uint { }
-	public enum Keymod : ushort { }
 	public enum PenAxis { }
-	public enum Scancode { }
 	public enum MouseWheelDirection { }
 	public enum PowerState { }
 }
