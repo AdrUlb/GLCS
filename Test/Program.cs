@@ -3,6 +3,8 @@ using GLCS.Managed;
 using SDL3CS;
 using System.Drawing;
 using System.Numerics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Test;
 
@@ -71,15 +73,15 @@ internal static class Program
 		return 0;
 	}
 
-	private static volatile int width_ = initialWidth_;
-	private static volatile int height_ = initialHeight_;
 	private static volatile bool closeRequested_ = false;
 
 	private unsafe static void Run()
 	{
-		Sdl.Init(Sdl.InitFlags.Video);
+#if !AOT_PUBLISH
+		NativeLibrary.SetDllImportResolver(typeof(Sdl).Assembly, ImportResolver);
+#endif
 
-		Sdl.AddEventWatch(EventWatch, 0);
+		Sdl.Init(Sdl.InitFlags.Video);
 
 		Sdl.GL_SetAttribute(Sdl.GLAttr.DoubleBuffer, 1);
 		Sdl.GL_SetAttribute(Sdl.GLAttr.ContextMajorVersion, 3);
@@ -141,59 +143,75 @@ internal static class Program
 
 		gl.Viewport(0, 0, initialWidth_, initialHeight_);
 
-		Sdl.GL_MakeCurrent(windowPtr.Value, Sdl.GLContext.Null);
-
-		var renderThread = new Thread(() =>
-		{
-			Sdl.GL_MakeCurrent(windowPtr.Value, context);
-			var lastWidth = width_;
-			var lastHeight = height_;
-			while (!closeRequested_)
-			{
-				if (lastWidth != width_ || lastHeight != height_)
-				{
-					lastWidth = width_;
-					lastHeight = height_;
-					gl.Viewport(0, 0, lastWidth, lastHeight);
-				}
-				gl.Clear(Color.CornflowerBlue, ClearBufferMask.ColorBufferBit);
-				vao.Draw(PrimitiveType.Triangles, 0, 3, program);
-				Sdl.GL_SwapWindow(windowPtr.Value);
-			}
-			Sdl.GL_MakeCurrent(windowPtr.Value, Sdl.GLContext.Null);
-		});
-
-		renderThread.Start();
-
 		Sdl.ShowWindow(windowPtr.Value);
 
 		while (!closeRequested_)
-			Sdl.WaitEvent(out _);
+		{
+			while (Sdl.PollEvent(out var ev))
+			{
+				switch (ev.Type)
+				{
+					case Sdl.EventType.WindowPixelSizeChanged:
+						gl.Viewport(0, 0, ev.Window.Data1, ev.Window.Data2);
+						break;
+					case Sdl.EventType.WindowCloseRequested:
+						closeRequested_ = true;
+						break;
+				}
+			}
 
-		SpinWait.SpinUntil(() => renderThread.Join(100));
+			gl.Clear(Color.CornflowerBlue, ClearBufferMask.ColorBufferBit);
+			vao.Draw(PrimitiveType.Triangles, 0, 3, program);
+			Sdl.GL_SwapWindow(windowPtr.Value);
+		}
 
 		vao.Dispose();
 		vbo.Dispose();
 		program.Dispose();
 
+		Sdl.GL_MakeCurrent(windowPtr.Value, Sdl.GLContext.Null);
 		Sdl.GL_DestroyContext(context);
 		Sdl.DestroyWindow(windowPtr.Value);
 
 		Sdl.Quit();
 	}
 
-	private static bool EventWatch(nint userdata, in Sdl.Event ev)
+	private static readonly Dictionary<string, nint> loadedLibraries_ = [];
+
+#if !AOT_PUBLISH
+	public static nint ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
-		switch (ev.Type)
+		if (loadedLibraries_.TryGetValue(libraryName, out var handle))
+			return handle;
+
+		var rid = RuntimeInformation.RuntimeIdentifier;
+		var prefix =
+			OperatingSystem.IsWindows() ? "" :
+			OperatingSystem.IsLinux() ? "lib" :
+			OperatingSystem.IsMacOS() ? "lib" :
+			throw new PlatformNotSupportedException();
+
+		var suffix =
+			OperatingSystem.IsWindows() ? ".dll" :
+			OperatingSystem.IsLinux() ? ".so" :
+			OperatingSystem.IsMacOS() ? ".dylib" :
+			throw new PlatformNotSupportedException();
+
+		var fullName = $"{prefix}{libraryName}{suffix}";
+		var path = Path.Combine("runtimes", rid, "native", fullName);
+		var appPath = Path.Combine(AppContext.BaseDirectory, path);
+
+		nint libraryHandle;
+
+		if ((File.Exists(path) && (libraryHandle = NativeLibrary.Load(path)) != 0) ||
+			(File.Exists(appPath) && (libraryHandle = NativeLibrary.Load(path)) != 0))
 		{
-			case Sdl.EventType.WindowPixelSizeChanged:
-				width_ = ev.Window.Data1;
-				height_ = ev.Window.Data2;
-				break;
-			case Sdl.EventType.WindowCloseRequested:
-				closeRequested_ = true;
-				break;
+			Console.WriteLine($"Resolved native library: {libraryName} -> {path}");
+			loadedLibraries_.Add(libraryName, libraryHandle);
+			return libraryHandle;
 		}
-		return true;
+
+		return 0;
 	}
+#endif
 }
