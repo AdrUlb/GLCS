@@ -159,7 +159,7 @@ internal static class Program
 						{
 							if (ev.Key.Key == Sdl.Keycode.Escape)
 								closeRequested_ = true;
-                            break;
+							break;
 						}
 					case Sdl.EventType.WindowCloseRequested:
 						closeRequested_ = true;
@@ -172,6 +172,8 @@ internal static class Program
 			vao.Draw(PrimitiveType.Triangles, 0, 3, program);
 			Sdl.GL_SwapWindow(window);
 		}
+
+		Sdl.HideWindow(window);
 
 		vao.Dispose();
 		vbo.Dispose();

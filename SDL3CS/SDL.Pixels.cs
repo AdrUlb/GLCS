@@ -303,48 +303,59 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetPixelFormatName(PixelFormat format);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetMasksForPixelFormat(PixelFormat format, out int bpp, out uint rmask, out uint gmask, out uint bmask, out uint amask);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial PixelFormat SDL_GetPixelFormatForMasks(int bpp, uint rmask, uint gmask, uint bmask, uint amask);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Ptr<PixelFormatDetails> SDL_GetPixelFormatDetails(PixelFormat format);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Ptr<Palette> SDL_CreatePalette(int ncolors);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_SetPaletteColors(in Palette palette, in Color colors, int firstcolor, int ncolors);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_DestroyPalette(in Palette palette);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial uint SDL_MapRGB(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial uint SDL_MapRGBA(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b, byte a);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_GetRGB(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_GetRGBA(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b, out byte a);
 	}
 

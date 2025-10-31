@@ -49,108 +49,132 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_HasKeyboard();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static unsafe partial KeyboardID* SDL_GetKeyboards(out int count);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetKeyboardNameForID(KeyboardID instanceId);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Ptr<Window> SDL_GetKeyboardFocus();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static unsafe partial byte* SDL_GetKeyboardState(out int numkeys);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_ResetKeyboard();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Keymod SDL_GetModState();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_SetModState(Keymod modstate);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Keycode SDL_GetKeyFromScancode(Scancode scancode, Keymod modstate, [MarshalAs(UnmanagedType.I1)] bool keyEvent);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Scancode SDL_GetScancodeFromKey(Keycode key, out Keymod modstate);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_SetScancodeName(Scancode scancode, string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetScancodeName(Scancode scancode);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Scancode SDL_GetScancodeFromName(string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetKeyName(Keycode key);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial Keycode SDL_GetKeyFromName(string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_StartTextInput(in Window window);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_StartTextInputWithProperties(in Window window, PropertiesID props);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_TextInputActive(in Window window);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_StopTextInput(in Window window);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_ClearComposition(in Window window);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_SetTextInputArea(in Window window, in Rect rect, int cursor);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetTextInputArea(in Window window, out Rect rect, out int cursor);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_HasScreenKeyboardSupport();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_ScreenKeyboardShown(in Window window);
 	}
@@ -169,7 +193,7 @@ public static partial class Sdl
 	public static Ptr<Window> GetKeyboardFocus() => Native.SDL_GetKeyboardFocus();
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public unsafe static ArrayPtr<bool> GetKeyboardState() => new((bool*)Native.SDL_GetKeyboardState(out var numkeys), numkeys);
+	public unsafe static ReadOnlySpan<bool> GetKeyboardState() => new((bool*)Native.SDL_GetKeyboardState(out var numkeys), numkeys);
 	
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void ResetKeyboard() => Native.SDL_ResetKeyboard();

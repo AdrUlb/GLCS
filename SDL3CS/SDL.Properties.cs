@@ -36,98 +36,119 @@ public static partial class Sdl
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial PropertiesID SDL_GetGlobalProperties();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial PropertiesID SDL_CreateProperties();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_CopyProperties(PropertiesID src, PropertiesID dst);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_LockProperties(PropertiesID props);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_UnlockProperties(PropertiesID props);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_SetPointerPropertyWithCleanup(PropertiesID props, string name, nint value, CleanupPropertyCallback cleanup, nint userdata);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_SetPointerProperty(PropertiesID props, string name, nint value);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_SetStringProperty(PropertiesID props, string name, string value);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_SetNumberProperty(PropertiesID props, string name, long value);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_SetFloatProperty(PropertiesID props, string name, float value);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_SetBooleanProperty(PropertiesID props, string name, [MarshalAs(UnmanagedType.I1)] bool value);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_HasProperty(PropertiesID props, string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial PropertyType SDL_GetPropertyType(PropertiesID props, string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetPointerProperty(PropertiesID props, string name, nint defaultValue);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetStringProperty(PropertiesID props, string name, string defaultValue);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial long SDL_GetNumberProperty(PropertiesID props, string name, long defaultValue);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial float SDL_GetFloatProperty(PropertiesID props, string name, float defaultValue);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_GetBooleanProperty(PropertiesID props, string name, [MarshalAs(UnmanagedType.I1)] bool defaultValue);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_ClearProperty(PropertiesID props, string name);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial void SDL_EnumerateProperties(PropertiesID props, EnumeratePropertiesCallback callback, nint userdata);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial void SDL_DestroyProperties(PropertiesID props);
 	}
 

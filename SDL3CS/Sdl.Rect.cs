@@ -35,51 +35,61 @@ public static partial class Sdl
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_HasRectIntersection(in Rect a, in Rect b);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectIntersection(in Rect a, in Rect b, out Rect result);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectUnion(in Rect a, in Rect b, out Rect result);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectEnclosingPoints(in Point points, int count, in Rect clip, out Rect result);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectAndLineIntersection(in Rect rect, ref int x1, ref int y1, ref int x2, ref int y2);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_HasRectIntersectionFloat(in FRect a, in FRect b);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectIntersectionFloat(in FRect a, in FRect b, out FRect result);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectUnionFloat(in FRect a, in FRect b, out FRect result);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectEnclosingPointsFloat(in FPoint points, int count, in FRect clip, out FRect result);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_GetRectAndLineIntersectionFloat(in FRect rect, ref float x1, ref float y1, ref float x2, ref float y2);
 	}

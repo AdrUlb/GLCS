@@ -9,20 +9,24 @@ public static partial class Sdl
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_SetError(string str);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_OutOfMemory();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static partial nint SDL_GetError();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		[return: MarshalAs(UnmanagedType.I1)]
 		public static partial bool SDL_ClearError();
 	}

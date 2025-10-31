@@ -81,30 +81,4 @@ public static partial class Sdl
 
 		public readonly void Dispose() => handle_.Dispose();
 	}
-
-	public readonly struct Surface { }
-
-	public readonly struct SensorID
-	{
-		private readonly uint value_;
-		public static implicit operator uint(SensorID obj) => obj.value_;
-	}
-
-	public readonly struct PenID
-	{
-		private readonly uint value_;
-		public static implicit operator uint(PenID obj) => obj.value_;
-	}
-
-	public enum TouchID : ulong { }
-	public enum FingerID : ulong { }
-	public enum PenInputFlags : uint { }
-	public enum MouseID : uint { }
-	public enum MouseButtonFlags : uint { }
-	public enum JoystickID : uint { }
-	public enum AudioDeviceID : uint { }
-	public enum CameraID : uint { }
-	public enum PenAxis { }
-	public enum MouseWheelDirection { }
-	public enum PowerState { }
 }
