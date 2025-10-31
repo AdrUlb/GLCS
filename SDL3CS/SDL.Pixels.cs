@@ -367,19 +367,37 @@ public static partial class Sdl
 	public static bool SetPaletteColors(in Palette palette, in Color colors, int firstcolor, int ncolors) => Native.SDL_SetPaletteColors(palette, colors, firstcolor, ncolors);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool SetPaletteColors(Ptr<Palette> palette, Ptr<Color> colors, int firstcolor, int ncolors) => Native.SDL_SetPaletteColors(palette.Value, colors.Value, firstcolor, ncolors);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void DestroyPalette(in Palette palette) => Native.SDL_DestroyPalette(palette);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void DestroyPalette(Ptr<Palette> palette) => Native.SDL_DestroyPalette(palette.Value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static uint MapRGB(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b) => Native.SDL_MapRGB(format, palette, r, g, b);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint MapRGB(Ptr<PixelFormatDetails> format, Ptr<Palette> palette, byte r, byte g, byte b) => Native.SDL_MapRGB(format.Value, palette.Value, r, g, b);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static uint MapRGBA(in PixelFormatDetails format, in Palette palette, byte r, byte g, byte b, byte a) => Native.SDL_MapRGBA(format, palette, r, g, b, a);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint MapRGBA(Ptr<PixelFormatDetails> format, Ptr<Palette> palette, byte r, byte g, byte b, byte a) => Native.SDL_MapRGBA(format.Value, palette.Value, r, g, b, a);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void GetRGB(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b) => Native.SDL_GetRGB(pixelvalue, format, palette, out r, out g, out b);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void GetRGB(uint pixelvalue, Ptr<PixelFormatDetails> format, Ptr<Palette> palette, out byte r, out byte g, out byte b) => Native.SDL_GetRGB(pixelvalue, format.Value, palette.Value, out r, out g, out b);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void GetRGBA(uint pixelvalue, in PixelFormatDetails format, in Palette palette, out byte r, out byte g, out byte b, out byte a) => Native.SDL_GetRGBA(pixelvalue, format, palette, out r, out g, out b, out a);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void GetRGBA(uint pixelvalue, Ptr<PixelFormatDetails> format, Ptr<Palette> palette, out byte r, out byte g, out byte b, out byte a) => Native.SDL_GetRGBA(pixelvalue, format.Value, palette.Value, out r, out g, out b, out a);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static PixelFormat DefinePixelFourCc(char a, char b, char c, char d) => (PixelFormat)DefineFourCc(a, b, c, d);

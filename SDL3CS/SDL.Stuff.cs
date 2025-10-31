@@ -99,7 +99,6 @@ public static partial class Sdl
 	public enum TouchID : ulong { }
 	public enum FingerID : ulong { }
 	public enum PenInputFlags : uint { }
-	public enum KeyboardID : uint { }
 	public enum MouseID : uint { }
 	public enum MouseButtonFlags : uint { }
 	public enum JoystickID : uint { }
