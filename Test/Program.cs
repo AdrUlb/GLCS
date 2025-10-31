@@ -91,16 +91,16 @@ internal static class Program
 		Sdl.GL_SetAttribute(Sdl.GLAttr.MultisampleBuffers, 1);
 		Sdl.GL_SetAttribute(Sdl.GLAttr.MultisampleSamples, 8);
 
-		var windowPtr = Sdl.CreateWindow("GLCS Test", initialWidth_, initialHeight_, Sdl.WindowFlags.OpenGL | Sdl.WindowFlags.Hidden | Sdl.WindowFlags.Resizable);
+		var window = Sdl.CreateWindow("GLCS Test", initialWidth_, initialHeight_, Sdl.WindowFlags.OpenGL | Sdl.WindowFlags.Hidden | Sdl.WindowFlags.Resizable);
 
-		if (windowPtr.IsNull)
+		if (window.IsNull)
 			throw new($"Failed to create SDL window: {Sdl.GetError()}");
 
-		var context = Sdl.GL_CreateContext(windowPtr.Value);
+		var context = Sdl.GL_CreateContext(window);
 		if (context.IsNull)
 			throw new($"Failed to create GL context: {Sdl.GetError()}");
 
-		Sdl.GL_MakeCurrent(windowPtr.Value, context);
+		Sdl.GL_MakeCurrent(window, context);
 		var gl = new ManagedGL(static proc => Sdl.GL_GetProcAddress(proc));
 
 		Console.WriteLine($"OpenGL Renderer: {gl.GetString(StringName.Renderer)}");
@@ -139,11 +139,11 @@ internal static class Program
 		var vao = new GLVertexArray(gl);
 		vao.VertexAttribPointers(vbo);
 
-		Sdl.GL_SetSwapInterval(Sdl.WindowSurfaceVsyncAdaptive);
+		Sdl.GL_SetSwapInterval(1);
 
 		gl.Viewport(0, 0, initialWidth_, initialHeight_);
 
-		Sdl.ShowWindow(windowPtr.Value);
+		Sdl.ShowWindow(window);
 
 		while (!closeRequested_)
 		{
@@ -160,18 +160,19 @@ internal static class Program
 				}
 			}
 
+			Sdl.GetWindowSizeInPixels(window, out var w, out var h);
 			gl.Clear(Color.CornflowerBlue, ClearBufferMask.ColorBufferBit);
 			vao.Draw(PrimitiveType.Triangles, 0, 3, program);
-			Sdl.GL_SwapWindow(windowPtr.Value);
+			Sdl.GL_SwapWindow(window);
 		}
 
 		vao.Dispose();
 		vbo.Dispose();
 		program.Dispose();
 
-		Sdl.GL_MakeCurrent(windowPtr.Value, Sdl.GLContext.Null);
+		Sdl.GL_MakeCurrent(window, Sdl.GLContext.Null);
 		Sdl.GL_DestroyContext(context);
-		Sdl.DestroyWindow(windowPtr.Value);
+		Sdl.DestroyWindow(window);
 
 		Sdl.Quit();
 	}

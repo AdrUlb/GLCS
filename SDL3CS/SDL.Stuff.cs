@@ -112,13 +112,4 @@ public static partial class Sdl
 	public enum Scancode { }
 	public enum MouseWheelDirection { }
 	public enum PowerState { }
-
-	public static uint DefineFourCc(char a, char b, char c, char d) => ((uint)(byte)a << 0) | ((uint)(byte)b << 8) | ((uint)(byte)c << 16) | ((uint)(byte)d << 24);
-
-	private static partial class Native
-	{
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)]
-		public static partial void SDL_free(nint mem);
-	}
 }
