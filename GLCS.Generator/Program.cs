@@ -102,10 +102,12 @@ internal class Program
 		member = member[3..];
 		var parts = member.Split('_', StringSplitOptions.RemoveEmptyEntries);
 		var sb = new StringBuilder();
-		foreach (var part in parts)
+
+		for (int i = 0; i < parts.Length; i++)
 		{
+			string? part = parts[i];
 			var firstChar = part[0];
-			if (char.IsAsciiDigit(firstChar))
+			if (i == 0 && char.IsAsciiDigit(firstChar))
 			{
 				sb.Append('N').Append(firstChar);
 			}

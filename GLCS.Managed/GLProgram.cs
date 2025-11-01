@@ -34,13 +34,16 @@ public unsafe sealed class GLProgram(ManagedGL gl) : IDisposable
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void AttachShader(GLShader shader) => gl.Unmanaged.AttachShader(Handle, shader.Handle);
+	public void Link(params ReadOnlySpan<GLShader> shaders)
+	{
+		foreach (var shader in shaders)
+			gl.Unmanaged.AttachShader(Handle, shader.Handle);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void DetachShader(GLShader shader) => gl.Unmanaged.DetachShader(Handle, shader.Handle);
+		gl.Unmanaged.LinkProgram(Handle);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Link() => gl.Unmanaged.LinkProgram(Handle);
+		foreach (var shader in shaders)
+			gl.Unmanaged.DetachShader(Handle, shader.Handle);
+	}
 
 	public void Dispose() => gl.Unmanaged.DeleteProgram(Handle);
 

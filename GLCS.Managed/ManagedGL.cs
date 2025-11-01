@@ -14,7 +14,6 @@ public unsafe partial class ManagedGL(GL.GetProcAddress getProcAddress)
 		Unmanaged.Viewport(x, y, width, height);
 	}
 
-
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public string? GetString(StringName name) => Marshal.PtrToStringUTF8((nint)Unmanaged.GetString(name));
 

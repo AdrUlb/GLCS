@@ -6,7 +6,7 @@ namespace GLCS.Managed;
 
 public unsafe sealed class GLShader(ManagedGL gl, ShaderType type) : IDisposable
 {
-	internal readonly uint Handle = gl.Unmanaged.CreateShader(type);
+	public readonly uint Handle = gl.Unmanaged.CreateShader(type);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Get(ShaderParameterName pname, Span<int> @params)
@@ -24,15 +24,6 @@ public unsafe sealed class GLShader(ManagedGL gl, ShaderType type) : IDisposable
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Source(string source)
-	{
-		var length = source.Length;
-		var nativeSource = (byte*)Marshal.StringToCoTaskMemUTF8(source);
-		gl.Unmanaged.ShaderSource(Handle, 1, &nativeSource, &length);
-		Marshal.FreeCoTaskMem((nint)nativeSource);
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public string GetInfoLog()
 	{
 		var infoLogLength = Get(ShaderParameterName.InfoLogLength);
@@ -44,7 +35,14 @@ public unsafe sealed class GLShader(ManagedGL gl, ShaderType type) : IDisposable
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Compile() => gl.Unmanaged.CompileShader(Handle);
+	public void Compile(string source)
+	{
+		var length = source.Length;
+		var nativeSource = (byte*)Marshal.StringToCoTaskMemUTF8(source);
+		gl.Unmanaged.ShaderSource(Handle, 1, &nativeSource, &length);
+		Marshal.FreeCoTaskMem((nint)nativeSource);
+		gl.Unmanaged.CompileShader(Handle);
+	}
 
 	public void Dispose() => gl.Unmanaged.DeleteShader(Handle);
 }
