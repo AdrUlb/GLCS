@@ -63,6 +63,6 @@ public unsafe sealed class GLFramebuffer : IDisposable
 	public void Dispose()
 	{
 		fixed (uint* handlePtr = &Handle)
-			gl_.Unmanaged.GenFramebuffers(1, handlePtr);
+			gl_.Unmanaged.DeleteFramebuffers(1, handlePtr);
 	}
 }
