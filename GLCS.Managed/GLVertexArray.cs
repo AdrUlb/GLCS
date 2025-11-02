@@ -14,10 +14,10 @@ public unsafe sealed class GLVertexArray : IDisposable
 			gl.Unmanaged.GenVertexArrays(1, handlePtr);
 	}
 
-	public void VertexAttribPointer<T>(uint index, int size, VertexAttribPointerType type, bool normalized, int stride, nint offset, GLBuffer<T> vertexBuffer) where T : unmanaged
+	public void VertexAttribPointer<T>(uint index, int size, VertexAttribPointerType type, bool normalized, int stride, nint offset, GLBuffer<T> arrayBuffer) where T : unmanaged
 	{
 		gl_.Unmanaged.BindVertexArray(Handle);
-		gl_.Unmanaged.BindBuffer(BufferTargetARB.ArrayBuffer, vertexBuffer.Handle);
+		gl_.Unmanaged.BindBuffer(BufferTargetARB.ArrayBuffer, arrayBuffer.Handle);
 		gl_.Unmanaged.VertexAttribPointer(index, size, type, normalized, stride, (void*)offset);
 		gl_.Unmanaged.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
 		gl_.Unmanaged.EnableVertexAttribArray(0);
@@ -25,10 +25,11 @@ public unsafe sealed class GLVertexArray : IDisposable
 
 	}
 
-	public void VertexAttribPointers<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T>(GLBuffer<T> vertexBuffer) where T : unmanaged
+
+	public void VertexAttribPointers<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T>(GLBuffer<T> arrayBuffer) where T : unmanaged
 	{
 		gl_.Unmanaged.BindVertexArray(Handle);
-		gl_.Unmanaged.BindBuffer(BufferTargetARB.ArrayBuffer, vertexBuffer.Handle);
+		gl_.Unmanaged.BindBuffer(BufferTargetARB.ArrayBuffer, arrayBuffer.Handle);
 		new GLVertexAttribsInfo<T>().VertexAttribPointers(gl_);
 		gl_.Unmanaged.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
 		gl_.Unmanaged.EnableVertexAttribArray(0);
@@ -42,6 +43,17 @@ public unsafe sealed class GLVertexArray : IDisposable
 		gl_.Unmanaged.BindVertexArray(Handle);
 		gl_.Unmanaged.DrawArrays(mode, first, count);
 		gl_.Unmanaged.BindVertexArray(0);
+		gl_.Unmanaged.UseProgram(0);
+	}
+
+	public void DrawElements<T>(PrimitiveType mode, GLBuffer<T> elementArray, int count, DrawElementsType type, GLProgram program) where T : unmanaged
+	{
+		gl_.Unmanaged.UseProgram(program.Handle);
+		gl_.Unmanaged.BindVertexArray(Handle);
+		gl_.Unmanaged.BindBuffer(BufferTargetARB.ElementArrayBuffer, elementArray.Handle);
+		gl_.Unmanaged.DrawElements(mode, count, type, (void*)0);
+		gl_.Unmanaged.BindVertexArray(0);
+		gl_.Unmanaged.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
 		gl_.Unmanaged.UseProgram(0);
 	}
 

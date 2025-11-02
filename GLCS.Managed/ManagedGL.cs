@@ -23,4 +23,25 @@ public unsafe partial class ManagedGL(GL.GetProcAddress getProcAddress)
 		Unmanaged.ClearColor(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);
 		Unmanaged.Clear(mask);
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Enable(EnableCap cap) => Unmanaged.Enable(cap);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Disable(EnableCap cap) => Unmanaged.Disable(cap);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void GetInteger(GetPName pname, Span<int> data)
+	{
+		fixed (int* dataPtr = data)
+			Unmanaged.GetIntegerv(pname, dataPtr);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int GetInteger(GetPName pname)
+	{
+		int data;
+		Unmanaged.GetIntegerv(pname, &data);
+		return data;
+	}
 }
