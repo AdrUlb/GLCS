@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
-
-namespace GLCS;
+﻿namespace GLCS;
 
 public unsafe partial class GL(GL.GetProcAddress getProcAddress)
 {

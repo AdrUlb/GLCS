@@ -6,26 +6,84 @@ namespace GLCS.Managed;
 public unsafe sealed class GLTexture : IDisposable
 {
 	public readonly uint Handle;
-	private readonly ManagedGL gl_;
+	public readonly TextureTarget Target;
 
-	public GLTexture(ManagedGL gl)
+	public TextureWrapMode WrapS
 	{
-		gl_ = gl;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		set => SetParameter(TextureParameterName.TextureWrapS, (int)value);
+	}
+
+	public TextureWrapMode WrapT
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		set => SetParameter(TextureParameterName.TextureWrapT, (int)value);
+	}
+
+	public TextureMinFilter MinFilter
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		set => SetParameter(TextureParameterName.TextureMinFilter, (int)value);
+	}
+
+	public TextureMagFilter MagFilter
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		set => SetParameter(TextureParameterName.TextureMagFilter, (int)value);
+	}
+
+	public GLTexture(TextureTarget target)
+	{
+		Target = target;
 		fixed (uint* handlePtr = &Handle)
-			gl.Unmanaged.GenTextures(1, handlePtr);
+			ManagedGL.Current.Unmanaged.GenTextures(1, handlePtr);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void SetParameter(TextureParameterName param, int value)
+	{
+		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		ManagedGL.Current.Unmanaged.TexParameteri(Target, param, value);
+		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Image2D(int level, InternalFormat internalFormat, Size size, int border, PixelFormat format, PixelType type)
+	{
+		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		ManagedGL.Current.Unmanaged.TexImage2D(Target, level, internalFormat, size.Width, size.Height, border, format, type, null);
+		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Image2D<T>(int level, InternalFormat internalFormat, Size size, int border, PixelFormat format, PixelType type, ReadOnlySpan<T> pixels) where T : unmanaged
+	{
+		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		fixed (T* pixelsPtr = pixels)
+			ManagedGL.Current.Unmanaged.TexImage2D(Target, level, internalFormat, size.Width, size.Height, border, format, type, pixelsPtr);
+		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void SubImage2D<T>(int level, Rectangle rect, PixelFormat format, PixelType type, ReadOnlySpan<T> pixels) where T : unmanaged
+	{
+		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		fixed (T* pixelsPtr = pixels)
+			ManagedGL.Current.Unmanaged.TexSubImage2D(Target, level, rect.X, rect.Y, rect.Width, rect.Height, format, type, pixelsPtr);
+		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Image2DMultisample(int samples, InternalFormat internalFormat, Size size, bool fixedSampleLocations)
 	{
-		gl_.Unmanaged.BindTexture(TextureTarget.Texture2dMultisample, Handle);
-		gl_.Unmanaged.TexImage2DMultisample(TextureTarget.Texture2dMultisample, samples, internalFormat, size.Width, size.Height, fixedSampleLocations);
-		gl_.Unmanaged.BindTexture(TextureTarget.Texture2dMultisample, 0);
+		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		ManagedGL.Current.Unmanaged.TexImage2DMultisample(Target, samples, internalFormat, size.Width, size.Height, fixedSampleLocations);
+		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
 	}
 
 	public void Dispose()
-    {
+	{
 		fixed (uint* handlePtr = &Handle)
-			gl_.Unmanaged.DeleteTextures(1, handlePtr);
+			ManagedGL.Current.Unmanaged.DeleteTextures(1, handlePtr);
 	}
 }

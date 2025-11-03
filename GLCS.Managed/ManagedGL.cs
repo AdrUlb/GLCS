@@ -6,13 +6,24 @@ namespace GLCS.Managed;
 
 public unsafe partial class ManagedGL(GL.GetProcAddress getProcAddress)
 {
+	[field: ThreadStatic]
+	public static ManagedGL Current
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get => field ?? throw new InvalidOperationException("No current ManagedGL context.");
+		private set;
+	}
+
 	public GL Unmanaged { get; } = new(getProcAddress);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Viewport(int x, int y, int width, int height)
-	{
-		Unmanaged.Viewport(x, y, width, height);
-	}
+	public void MakeCurrent() => Current = this;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void DoneCurrent() => Current = null!;
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Viewport(int x, int y, int width, int height) => Unmanaged.Viewport(x, y, width, height);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public string? GetString(StringName name) => Marshal.PtrToStringUTF8((nint)Unmanaged.GetString(name));
