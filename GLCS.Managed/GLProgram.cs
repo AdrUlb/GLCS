@@ -1,9 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GLCS.Managed;
 
-public unsafe sealed class GLProgram() : IDisposable
+public unsafe sealed class GLProgram : IDisposable
 {
 	public readonly uint Handle = ManagedGL.Current.Unmanaged.CreateProgram();
 
@@ -45,6 +46,18 @@ public unsafe sealed class GLProgram() : IDisposable
 			ManagedGL.Current.Unmanaged.DetachShader(Handle, shader.Handle);
 	}
 
-	public void Dispose() => ManagedGL.Current.Unmanaged.DeleteProgram(Handle);
+	public GLUniformLocation GetUniformLocation(string name)
+	{
+		ManagedGL.Current.Unmanaged.UseProgram(Handle);
+		
+		var nativeName = Marshal.StringToCoTaskMemUTF8(name);
+		var location = ManagedGL.Current.Unmanaged.GetUniformLocation(Handle, (byte*)nativeName);
+		Marshal.FreeCoTaskMem(nativeName);
 
+		ManagedGL.Current.Unmanaged.UseProgram(0);
+
+		return new(this, location);
+	}
+
+	public void Dispose() => ManagedGL.Current.Unmanaged.DeleteProgram(Handle);
 }

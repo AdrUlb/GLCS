@@ -35,11 +35,20 @@ public unsafe sealed class GLVertexArray : IDisposable
 
 	}
 
-	public void Draw(PrimitiveType mode, int first, int count, GLProgram program)
+	public void DrawArrays(PrimitiveType mode, int first, int count, GLProgram program)
 	{
 		ManagedGL.Current.Unmanaged.UseProgram(program.Handle);
 		ManagedGL.Current.Unmanaged.BindVertexArray(Handle);
 		ManagedGL.Current.Unmanaged.DrawArrays(mode, first, count);
+		ManagedGL.Current.Unmanaged.BindVertexArray(0);
+		ManagedGL.Current.Unmanaged.UseProgram(0);
+	}
+
+	public void DrawArraysInstanced(PrimitiveType mode, int first, int count, int instanceCount, GLProgram program)
+	{
+		ManagedGL.Current.Unmanaged.UseProgram(program.Handle);
+		ManagedGL.Current.Unmanaged.BindVertexArray(Handle);
+		ManagedGL.Current.Unmanaged.DrawArraysInstanced(mode, first, count, instanceCount);
 		ManagedGL.Current.Unmanaged.BindVertexArray(0);
 		ManagedGL.Current.Unmanaged.UseProgram(0);
 	}
@@ -50,6 +59,17 @@ public unsafe sealed class GLVertexArray : IDisposable
 		ManagedGL.Current.Unmanaged.BindVertexArray(Handle);
 		ManagedGL.Current.Unmanaged.BindBuffer(BufferTargetARB.ElementArrayBuffer, elementArray.Handle);
 		ManagedGL.Current.Unmanaged.DrawElements(mode, count, type, (void*)0);
+		ManagedGL.Current.Unmanaged.BindVertexArray(0);
+		ManagedGL.Current.Unmanaged.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
+		ManagedGL.Current.Unmanaged.UseProgram(0);
+	}
+
+	public void DrawElementsInstanced<T>(PrimitiveType mode, GLBuffer<T> elementArray, int count, DrawElementsType type, int instanceCount, GLProgram program) where T : unmanaged
+	{
+		ManagedGL.Current.Unmanaged.UseProgram(program.Handle);
+		ManagedGL.Current.Unmanaged.BindVertexArray(Handle);
+		ManagedGL.Current.Unmanaged.BindBuffer(BufferTargetARB.ElementArrayBuffer, elementArray.Handle);
+		ManagedGL.Current.Unmanaged.DrawElementsInstanced(mode, count, type, (void*)0, instanceCount);
 		ManagedGL.Current.Unmanaged.BindVertexArray(0);
 		ManagedGL.Current.Unmanaged.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
 		ManagedGL.Current.Unmanaged.UseProgram(0);

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 
 namespace GLCS.Managed;
@@ -40,45 +41,58 @@ public unsafe sealed class GLTexture : IDisposable
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Bind() => ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Unbind() => ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SetParameter(TextureParameterName param, int value)
 	{
-		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		Bind();
 		ManagedGL.Current.Unmanaged.TexParameteri(Target, param, value);
-		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+		Unbind();
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Image2D(int level, InternalFormat internalFormat, Size size, int border, PixelFormat format, PixelType type)
 	{
-		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		Bind();
 		ManagedGL.Current.Unmanaged.TexImage2D(Target, level, internalFormat, size.Width, size.Height, border, format, type, null);
-		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+		Unbind();
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Image2D<T>(int level, InternalFormat internalFormat, Size size, int border, PixelFormat format, PixelType type, ReadOnlySpan<T> pixels) where T : unmanaged
 	{
-		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		Bind();
 		fixed (T* pixelsPtr = pixels)
 			ManagedGL.Current.Unmanaged.TexImage2D(Target, level, internalFormat, size.Width, size.Height, border, format, type, pixelsPtr);
-		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+		Unbind();
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void SubImage2D<T>(int level, Rectangle rect, PixelFormat format, PixelType type, ReadOnlySpan<T> pixels) where T : unmanaged
 	{
-		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		Bind();
 		fixed (T* pixelsPtr = pixels)
 			ManagedGL.Current.Unmanaged.TexSubImage2D(Target, level, rect.X, rect.Y, rect.Width, rect.Height, format, type, pixelsPtr);
-		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+		Unbind();
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Image2DMultisample(int samples, InternalFormat internalFormat, Size size, bool fixedSampleLocations)
 	{
-		ManagedGL.Current.Unmanaged.BindTexture(Target, Handle);
+		Bind();
 		ManagedGL.Current.Unmanaged.TexImage2DMultisample(Target, samples, internalFormat, size.Width, size.Height, fixedSampleLocations);
-		ManagedGL.Current.Unmanaged.BindTexture(Target, 0);
+		Unbind();
+	}
+
+	public void GenerateMipmap()
+	{
+		Bind();
+		ManagedGL.Current.Unmanaged.GenerateMipmap(Target);
+		Unbind();
 	}
 
 	public void Dispose()
