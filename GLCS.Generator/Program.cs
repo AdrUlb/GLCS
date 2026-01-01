@@ -11,7 +11,7 @@ internal sealed class GLEnum(string name, string type, bool isBitmask)
 	public readonly List<string> Members = [];
 }
 
-internal class Program
+internal static class Program
 {
 	private static void Main(string[] args)
 	{
