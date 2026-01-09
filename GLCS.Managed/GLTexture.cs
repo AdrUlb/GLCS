@@ -55,6 +55,16 @@ public unsafe sealed class GLTexture : IDisposable
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void SetParameter(TextureParameterName param, ReadOnlySpan<int> values)
+	{
+		Bind();
+		fixed (int* valuesPtr = values)
+			ManagedGL.Current.Unmanaged.TexParameteriv(Target, param, valuesPtr);
+
+		Unbind();
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Image2D(int level, InternalFormat internalFormat, Size size, int border, PixelFormat format, PixelType type)
 	{
 		Bind();
@@ -68,6 +78,7 @@ public unsafe sealed class GLTexture : IDisposable
 		Bind();
 		fixed (T* pixelsPtr = pixels)
 			ManagedGL.Current.Unmanaged.TexImage2D(Target, level, internalFormat, size.Width, size.Height, border, format, type, pixelsPtr);
+
 		Unbind();
 	}
 
@@ -77,6 +88,7 @@ public unsafe sealed class GLTexture : IDisposable
 		Bind();
 		fixed (T* pixelsPtr = pixels)
 			ManagedGL.Current.Unmanaged.TexSubImage2D(Target, level, rect.X, rect.Y, rect.Width, rect.Height, format, type, pixelsPtr);
+
 		Unbind();
 	}
 
